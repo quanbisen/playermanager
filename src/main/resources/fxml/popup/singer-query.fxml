@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="174.0" maxWidth="331.0" prefHeight="174.0" prefWidth="319.0" style="-fx-background-color: #dedede" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.popup.SingerQueryController">
+    <children>
+        <Button fx:id="btnConfirm" layoutX="113.0" layoutY="119.0" mnemonicParsing="false" text="确定" onAction="#onClickedConfirm"/>
+        <Button fx:id="btnCancel" layoutX="181.0" layoutY="119.0" mnemonicParsing="false" text="取消" onAction="#onClickedCancel"/>
+        <Label layoutX="113.0" layoutY="29.0" text="根据歌手名字查询" />
+        <TextField fx:id="tfName" layoutX="80.0" layoutY="67.0" promptText="请输入歌手名字" text="" />
+    </children>
+</AnchorPane>
