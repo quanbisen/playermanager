@@ -26,6 +26,10 @@ public class FXManager extends Application {
         applicationContext = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_PATH);
     }
 
+    public static void main(String[] args) {
+        Application.launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/main/main.fxml");
@@ -45,4 +49,6 @@ public class FXManager extends Application {
     public void stop() {
         applicationContext.close();
     }
+
+
 }

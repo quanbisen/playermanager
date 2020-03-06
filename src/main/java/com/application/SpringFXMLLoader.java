@@ -1,16 +1,16 @@
 package com.application;
 
 import javafx.fxml.FXMLLoader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 
 @Component
 public final class SpringFXMLLoader {
 
     /**注入Spring上下文对象*/
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
     /**

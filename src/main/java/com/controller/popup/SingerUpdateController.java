@@ -11,11 +11,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.Resource;
-import java.io.File;
 import java.time.ZoneId;
 
 /**
@@ -58,10 +56,10 @@ public class SingerUpdateController {
 
     private Singer selectedSinger;
 
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
-    @Resource
+    @Autowired
     private TabSingerController tabSingerController;
 
     public TextField getTfWeight() {

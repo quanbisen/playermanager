@@ -9,12 +9,10 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
@@ -25,13 +23,13 @@ import java.nio.charset.Charset;
 @Scope("prototype")
 public class UpdateSingerService extends javafx.concurrent.Service<Void> {
 
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
-    @Resource
+    @Autowired
     private SingerUpdateController singerUpdateController;
 
-    @Resource
+    @Autowired
     private TabSingerController tabSingerController;
 
     @Override

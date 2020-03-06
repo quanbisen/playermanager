@@ -8,9 +8,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-import javax.annotation.Resource;
 
 /**
  * @author super lollipop
@@ -47,10 +47,10 @@ public class SongUpdateController {
     @FXML
     private ProgressIndicator progressIndicator;
 
-    @Resource
+    @Autowired
     private TabSongController tabSongController;
 
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
     private Song selectedSong;

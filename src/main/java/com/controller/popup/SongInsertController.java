@@ -21,10 +21,9 @@ import org.jaudiotagger.tag.id3.AbstractID3v2Frame;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.tag.id3.ID3v22Tag;
 import org.jaudiotagger.tag.id3.framebody.FrameBodyAPIC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -86,7 +85,7 @@ public class SongInsertController {
 
     private byte[] albumBytes;
 
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
     public TextField getTfTitle() {

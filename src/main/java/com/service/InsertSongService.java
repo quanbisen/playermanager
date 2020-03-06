@@ -14,16 +14,13 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-
-import static sun.net.www.protocol.http.HttpURLConnection.userAgent;
 
 /**
  * @author super lollipop
@@ -33,13 +30,13 @@ import static sun.net.www.protocol.http.HttpURLConnection.userAgent;
 @Scope("prototype")
 public class InsertSongService extends javafx.concurrent.Service<Void> {
 
-    @Resource
+    @Autowired
     private SongInsertController songInsertController;
 
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
-    @Resource
+    @Autowired
     private TabSongController tabSongController;
 
     @Override
@@ -82,7 +79,6 @@ public class InsertSongService extends javafx.concurrent.Service<Void> {
     private String upload(String url, File songFile, Song song , File lyricFile, byte[] bytes){
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         HttpPost httpPost = new HttpPost(url);  //"http://127.0.0.1:8080/OnlineExam_war_exploded/Student/HandleUploadImage"
-        httpPost.setHeader("User-Agent", userAgent);
         MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create().
                 addBinaryBody("songFile",songFile).     //歌曲文件
                 addTextBody("name",song.getName(), ContentType.create("text/plain", Charset.forName("UTF-8"))).

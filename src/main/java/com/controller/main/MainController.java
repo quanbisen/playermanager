@@ -4,9 +4,9 @@ import com.application.SpringFXMLLoader;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TabPane;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-import javax.annotation.Resource;
 import java.io.IOException;
 
 /**
@@ -19,7 +19,7 @@ public class MainController {
     @FXML
     private TabPane tabPane;
 
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
     public void initialize() throws IOException {

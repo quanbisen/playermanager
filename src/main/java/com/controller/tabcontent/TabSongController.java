@@ -15,10 +15,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.Resource;
 import java.io.IOException;
 
 /**
@@ -70,7 +69,7 @@ public class TabSongController {
     @FXML
     private TableColumn<Song, String> columnSize;
 
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
     public ProgressIndicator getProgressIndicator() {

@@ -14,10 +14,9 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -73,7 +72,7 @@ public class TabSingerController {
     @FXML
     private ProgressIndicator progressIndicator;
 
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
     public TableView<Singer> getTableViewSinger() {

@@ -8,11 +8,10 @@ import com.util.HttpClientUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -23,10 +22,10 @@ import java.util.List;
 @Scope("prototype")
 public class QueryAllSingerService extends javafx.concurrent.Service<ObservableList<Singer>> {
 
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
-    @Resource
+    @Autowired
     private TabSingerController tabSingerController;
 
     @Override

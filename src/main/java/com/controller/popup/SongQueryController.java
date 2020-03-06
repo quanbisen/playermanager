@@ -6,10 +6,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.Resource;
 
 /**
  * @author super lollipop
@@ -24,10 +23,10 @@ public class SongQueryController {
     @FXML
     private Button btnCancel;
 
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
-    @Resource
+    @Autowired
     private TabSongController tabSongController;
 
     public TextField getTfName() {

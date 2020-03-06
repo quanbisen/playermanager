@@ -10,15 +10,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
-import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.LocalDate;
 
 /**
  * @author super lollipop
@@ -109,7 +107,7 @@ public class SingerInsertController {
         return imageBytes;
     }
 
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
     public void initialize(){
