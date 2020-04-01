@@ -16,7 +16,7 @@
    <top>
       <HBox alignment="CENTER" prefHeight="33.0" prefWidth="500.0" style="-fx-border-color: #E4E4E3; -fx-border-width: 0 0 1 0;" BorderPane.alignment="CENTER">
          <children>
-            <Label text="编辑歌曲上传">
+            <Label text="新增歌曲上传">
                <font>
                   <Font size="16.0" />
                </font>

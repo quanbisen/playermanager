@@ -14,11 +14,16 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+
+import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * @author super lollipop
@@ -26,6 +31,8 @@ import java.io.IOException;
  */
 @Controller
 public class TabSongController {
+
+    private static Logger logger;
 
     @FXML
     public StackPane root;
@@ -168,8 +175,9 @@ public class TabSongController {
     @FXML
     public void onClickedQuery(MouseEvent mouseEvent) throws IOException {
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
+
             Stage primaryStage = (Stage) btnQuery.getScene().getWindow();
-            Stage stage = StageUtils.getStage(primaryStage,applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/singer-query.fxml").load());
+            Stage stage = StageUtils.getStage(primaryStage,applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/song-query.fxml").load());
             StageUtils.synchronizeCenter(primaryStage,stage);
             stage.show();
         }

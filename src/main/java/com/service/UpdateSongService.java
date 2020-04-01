@@ -67,7 +67,7 @@ public class UpdateSongService extends javafx.concurrent.Service<Void> {
                 addTextBody("id",String.valueOf(songUpdateController.getSelectedSong().getId()), ContentType.create("text/plain", Charset.forName("UTF-8"))).
                 addTextBody("name",songUpdateController.getTfTitle().getText(),ContentType.create("text/plain", Charset.forName("UTF-8"))).
                 addTextBody("singer",songUpdateController.getTfArtist().getText(),ContentType.create("text/plain", Charset.forName("UTF-8"))).
-                addTextBody("album",songUpdateController.getTfArtist().getText(),ContentType.create("text/plain", Charset.forName("UTF-8")));
+                addTextBody("album",songUpdateController.getTfAlbum().getText(),ContentType.create("text/plain", Charset.forName("UTF-8")));
         return HttpClientUtils.executePost(url,multipartEntityBuilder.build());
     }
 }
