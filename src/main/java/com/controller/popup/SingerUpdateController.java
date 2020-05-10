@@ -1,8 +1,7 @@
 package com.controller.popup;
 
-import com.controller.tabcontent.TabSingerController;
+import com.controller.content.TabSingerController;
 import com.pojo.Singer;
-import com.service.InsertSingerService;
 import com.service.UpdateSingerService;
 import com.util.AlertUtils;
 import javafx.application.Platform;
@@ -153,7 +152,7 @@ public class SingerUpdateController {
         if (validateInput()){
             UpdateSingerService updateSingerService = applicationContext.getBean(UpdateSingerService.class);
             progressIndicator.visibleProperty().bind(updateSingerService.runningProperty());
-            updateSingerService.start();
+            updateSingerService.restart();
         }
     }
 

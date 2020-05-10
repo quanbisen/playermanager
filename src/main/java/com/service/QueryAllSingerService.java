@@ -2,7 +2,7 @@ package com.service;
 
 import com.alibaba.fastjson.JSON;
 import com.config.ServerConfig;
-import com.controller.tabcontent.TabSingerController;
+import com.controller.content.TabSingerController;
 import com.pojo.Singer;
 import com.util.HttpClientUtils;
 import javafx.collections.FXCollections;

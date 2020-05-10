@@ -1,6 +1,6 @@
 package com.controller.popup;
 
-import com.controller.tabcontent.TabSongController;
+import com.controller.content.TabSongController;
 import com.pojo.Song;
 import com.service.UpdateSongService;
 import javafx.event.ActionEvent;

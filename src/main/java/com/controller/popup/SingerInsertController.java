@@ -163,7 +163,7 @@ public class SingerInsertController {
         if (validateInput()){
             InsertSingerService insertSingerService = applicationContext.getBean(InsertSingerService.class);
             progressIndicator.visibleProperty().bind(insertSingerService.runningProperty());
-            insertSingerService.start();
+            insertSingerService.restart();
         }
     }
 

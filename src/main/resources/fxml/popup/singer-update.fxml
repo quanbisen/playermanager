@@ -51,7 +51,7 @@
                 <Label layoutX="22.0" layoutY="199.0" text="星座：" />
                 <TextArea fx:id="taDescription" layoutX="282.0" layoutY="20.0" prefHeight="204.0" prefWidth="150.0" promptText="可选" wrapText="true" />
                 <Label layoutX="237.0" layoutY="25.0" text="描述：" />
-                <ComboBox fx:id="cbConstellation" layoutX="68.0" layoutY="194.0" prefHeight="30.0" prefWidth="150.0" promptText="可选">
+                <ComboBox fx:id="cbConstellation" layoutX="68.0" layoutY="194.0" prefHeight="30.0" prefWidth="150.0">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="白羊座" />

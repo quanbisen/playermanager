@@ -1,8 +1,10 @@
 package com.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.config.ServerConfig;
 import com.controller.popup.SingerInsertController;
-import com.controller.tabcontent.TabSingerController;
+import com.controller.content.TabSingerController;
+import com.pojo.Singer;
 import com.util.AlertUtils;
 import com.util.HttpClientUtils;
 import javafx.application.Platform;
@@ -13,16 +15,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.time.ZoneId;
+import java.util.Date;
 
 /**
  * @author super lollipop
  * @date 20-2-24
  */
 @Service
-@Scope("prototype")
+@Scope("singleton")
 public class InsertSingerService extends javafx.concurrent.Service<Void> {
 
     @Autowired
@@ -43,31 +48,28 @@ public class InsertSingerService extends javafx.concurrent.Service<Void> {
                     //获取歌手图片的文件名
                     String fileName = singerInsertController.getImageFile().getName();
                     String url = applicationContext.getBean(ServerConfig.class).getSingerURL() + "/insert";
-                    MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create().
-                            addTextBody("name",singerInsertController.getTfName().getText(),ContentType.create("text/pain",Charset.forName("UTF-8"))).
-                            addBinaryBody("bytes",singerInsertController.getImageBytes(),ContentType.DEFAULT_BINARY,fileName);
-                    if (singerInsertController.getDpBirthday().getValue() != null){
-                        int day = singerInsertController.getDpBirthday().getValue().getDayOfMonth();
-                        int month = singerInsertController.getDpBirthday().getValue().getMonthValue();
-                        int year = singerInsertController.getDpBirthday().getValue().getYear();
-                        String birthday = year + "/" + month + "/" + day; //xxxx/xx/xx
-                        multipartEntityBuilder.addTextBody("birthday",birthday,ContentType.create("text/pain",Charset.forName("UTF-8")));
+                    Singer singer = new Singer();
+                    singer.setName(singerInsertController.getTfName().getText());
+                    if (singerInsertController.getDpBirthday().getValue() != null){ //设置生日
+                        singer.setBirthday(Date.from(singerInsertController.getDpBirthday().getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
                     }
                     if (!singerInsertController.getTfHeight().getText().trim().equals("")){
-                        multipartEntityBuilder.addTextBody("height",singerInsertController.getTfHeight().getText().trim(),ContentType.create("text/pain",Charset.forName("UTF-8")));
+                        singer.setHeight(Float.parseFloat(singerInsertController.getTfHeight().getText().trim()));
                     }
                     if (!singerInsertController.getTfWeight().getText().trim().equals("")){
-                        multipartEntityBuilder.addTextBody("weight",singerInsertController.getTfWeight().getText().trim(),ContentType.create("text/pain",Charset.forName("UTF-8")));
+                        singer.setWeight(Float.parseFloat(singerInsertController.getTfWeight().getText().trim()));
                     }
-                    if (singerInsertController.getCbConstellation().getValue() != null && !singerInsertController.getCbConstellation().getValue().equals("")){
-                        multipartEntityBuilder.addTextBody("constellation",singerInsertController.getCbConstellation().getValue(),ContentType.create("text/pain",Charset.forName("UTF-8")));
+                    if (!StringUtils.isEmpty(singerInsertController.getCbConstellation().getValue())){
+                        singer.setConstellation(singerInsertController.getCbConstellation().getValue());
                     }
                     if (!singerInsertController.getTaDescription().getText().trim().equals("")){
-                        multipartEntityBuilder.addTextBody("description",singerInsertController.getTaDescription().getText().trim(),ContentType.create("text/pain",Charset.forName("UTF-8")));
+                        singer.setDescription(singerInsertController.getTaDescription().getText().trim());
                     }
+                    MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create().
+                            addTextBody("singer",JSONObject.toJSONString(singer),ContentType.create("application/json",Charset.forName("UTF-8"))).
+                            addBinaryBody("bytes",singerInsertController.getImageBytes(),ContentType.DEFAULT_BINARY,fileName);
                     try {
                         String responseString = HttpClientUtils.executePost(url,multipartEntityBuilder.build());
-                        System.out.println(responseString);
                         Platform.runLater(()->{
                             singerInsertController.getTaDescription().getScene().getWindow().hide();    //关闭窗口
                             if (responseString.equals("success")){
@@ -77,13 +79,11 @@ public class InsertSingerService extends javafx.concurrent.Service<Void> {
                                 AlertUtils.showError("新增歌手失败");
                             }
                         });
-
                         return null;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }catch (Exception e){e.printStackTrace();}
-
                 return null;
             }
         };

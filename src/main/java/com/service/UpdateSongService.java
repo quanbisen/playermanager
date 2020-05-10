@@ -2,7 +2,7 @@ package com.service;
 
 import com.config.ServerConfig;
 import com.controller.popup.SongUpdateController;
-import com.controller.tabcontent.TabSongController;
+import com.controller.content.TabSongController;
 import com.util.HttpClientUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;

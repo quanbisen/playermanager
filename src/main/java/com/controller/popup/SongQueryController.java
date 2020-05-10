@@ -1,6 +1,6 @@
 package com.controller.popup;
 
-import com.controller.tabcontent.TabSongController;
+import com.controller.content.TabSongController;
 import com.service.QuerySongByNameService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

@@ -1,4 +1,4 @@
-package com.controller.tabcontent;
+package com.controller.content;
 
 import com.application.SpringFXMLLoader;
 import com.config.ServerConfig;
@@ -14,14 +14,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 

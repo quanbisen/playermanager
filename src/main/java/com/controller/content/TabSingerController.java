@@ -1,4 +1,4 @@
-package com.controller.tabcontent;
+package com.controller.content;
 
 import com.application.SpringFXMLLoader;
 import com.config.ServerConfig;
