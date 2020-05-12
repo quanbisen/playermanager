@@ -30,4 +30,8 @@ public class ServerConfig {
     public String getSingerURL(){
         return server + "/singer";
     }
+
+    public String getAlbumURL(){
+        return server + "/album";
+    }
 }
