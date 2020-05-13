@@ -7,27 +7,35 @@ import com.util.ParserUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import java.nio.charset.Charset;
 import java.util.List;
 
 @Service
 @Scope("prototype")
-public class QueryAllService extends javafx.concurrent.Service<ObservableList> {
+public class QueryByNameService extends javafx.concurrent.Service<ObservableList> {
+
+    private Category category;
 
     private ServerConfig serverConfig;
 
-    /**枚举当前要查询的是哪个种类*/
-    private Category category;
+    private String name;
 
     @Autowired
     public void constructor(ServerConfig serverConfig){
         this.serverConfig = serverConfig;
     }
 
-    public void setCategoryEnum(Category categoryEnum) {
-        this.category = categoryEnum;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @Override
@@ -38,20 +46,21 @@ public class QueryAllService extends javafx.concurrent.Service<ObservableList> {
                 String url = null;
                 switch (category){
                     case Singer:{
-                        url = serverConfig.getSingerURL() + "/queryAll";
+                        url = serverConfig.getSingerURL() + "/queryByName";
                         break;
                     }
                     case Album:{
-                        url = serverConfig.getAlbumURL() + "/queryAll";
+                        url = serverConfig.getAlbumURL() + "/queryByName";
                         break;
                     }
                     case Song:{
-                        url = serverConfig.getSongURL() + "/queryAll";
+                        url = serverConfig.getSongURL() + "/queryByName";
                         break;
                     }
                     default:
                 }
-                String responseString = HttpClientUtils.executeGet(url);
+                MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create().addTextBody("name",name, ContentType.create("text/plain", Charset.forName("utf-8")));
+                String responseString = HttpClientUtils.executePost(url,multipartEntityBuilder.build());
                 List list = ParserUtils.parseResponseStringList(responseString,category);
                 ObservableList observableList = FXCollections.observableArrayList();
                 observableList.addAll(list);

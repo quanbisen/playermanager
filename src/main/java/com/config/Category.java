@@ -1,4 +1,4 @@
-package com.service;
+package com.config;
 
 public enum Category {
     Singer,

@@ -2,14 +2,16 @@ package com.controller.content;
 
 import com.application.SpringFXMLLoader;
 import com.config.ServerConfig;
+import com.controller.popup.AlbumQueryController;
 import com.pojo.Album;
-import com.pojo.Singer;
-import com.service.Category;
+import com.config.Category;
 import com.service.QueryAllService;
 import com.util.HttpClientUtils;
 import com.util.StageUtils;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
@@ -50,7 +52,7 @@ public class TabAlbumController {
     private Button btnRefresh;
 
     @FXML
-    private TableView<Album> tableViewSong;
+    private TableView<Album> tableViewAlbum;
 
     @FXML
     private TableColumn<Album, Integer> columnID;
@@ -94,6 +96,7 @@ public class TabAlbumController {
             return cell;
         });
         updateTable();
+
     }
 
     private void updateTable(){
@@ -103,14 +106,14 @@ public class TabAlbumController {
         progressIndicator.visibleProperty().bind(queryAllService.runningProperty());
         queryAllService.setOnSucceeded(event -> {
             ObservableList observableList = queryAllService.getValue();
-            tableViewSong.setItems((ObservableList<Album>) observableList);
+            tableViewAlbum.setItems((ObservableList<Album>) observableList);
         });
     }
 
     @FXML
     public void onClickedAdd(MouseEvent mouseEvent) throws IOException {
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
-            Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/song-insert.fxml").load());
+            Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/album-insert.fxml").load());
             StageUtils.synchronizeCenter((Stage) btnAdd.getScene().getWindow(),stage);
             stage.show();
         }
@@ -119,7 +122,7 @@ public class TabAlbumController {
     @FXML
     public void onClickedModify(MouseEvent mouseEvent) throws IOException {
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
-            Album album = tableViewSong.getSelectionModel().getSelectedItem();
+            Album album = tableViewAlbum.getSelectionModel().getSelectedItem();
             if (album == null){
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("提示");
@@ -138,7 +141,7 @@ public class TabAlbumController {
     @FXML
     public void onClickedDelete(MouseEvent mouseEvent) throws IOException {
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
-            Album album = tableViewSong.getSelectionModel().getSelectedItem();
+            Album album = tableViewAlbum.getSelectionModel().getSelectedItem();
             if (album == null){
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("提示");
@@ -150,7 +153,7 @@ public class TabAlbumController {
                 alert.setTitle("提示");
                 if (string.equals("1")){    //如果返回等于一
                     alert.setContentText("删除成功");
-                    tableViewSong.getItems().remove(album);
+                    tableViewAlbum.getItems().remove(album);
                 }else {
                     alert.setContentText("删除失败");
                 }
@@ -164,10 +167,13 @@ public class TabAlbumController {
     @FXML
     public void onClickedQuery(MouseEvent mouseEvent) throws IOException {
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
-
             Stage primaryStage = (Stage) btnQuery.getScene().getWindow();
-            Stage stage = StageUtils.getStage(primaryStage,applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/song-query.fxml").load());
+            FXMLLoader fxmlLoader = applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/album-query.fxml");
+            Stage stage = StageUtils.getStage(primaryStage,fxmlLoader.load());
             StageUtils.synchronizeCenter(primaryStage,stage);
+            AlbumQueryController albumQueryController = fxmlLoader.getController();
+            albumQueryController.setProgressIndicator(progressIndicator);
+            albumQueryController.setTableViewAlbum(tableViewAlbum);
             stage.show();
         }
     }

@@ -24,7 +24,7 @@
                 </HBox>
             </top>
             <center>
-                <TableView fx:id="tableViewSong" prefHeight="340.0" prefWidth="645.0" BorderPane.alignment="CENTER">
+                <TableView fx:id="tableViewAlbum" prefHeight="340.0" prefWidth="645.0" BorderPane.alignment="CENTER">
                     <columns>
                         <TableColumn fx:id="columnID" prefWidth="88.0" text="ID" />
                         <TableColumn fx:id="columnAlbum" prefWidth="113.0" text="专辑名称" />
