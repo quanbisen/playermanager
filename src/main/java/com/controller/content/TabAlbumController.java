@@ -106,6 +106,7 @@ public class TabAlbumController {
         queryAllService.setOnSucceeded(event -> {
             ObservableList observableList = queryAllService.getValue();
             tableViewAlbum.setItems((ObservableList<Album>) observableList);
+            tableViewAlbum.getSelectionModel().clearSelection();
         });
     }
 
