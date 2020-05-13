@@ -33,16 +33,17 @@ public class QuerySingerByNameService extends javafx.concurrent.Service<Observab
         Task<ObservableList<Singer>> task = new Task<ObservableList<Singer>>() {
             @Override
             protected ObservableList<Singer> call() throws Exception {
-                System.out.println(applicationContext.getBean(ServerConfig.class).getSingerURL() + "/query/" + singerQueryController.getTfName().getText());
-                String responseString = HttpClientUtils.executeGet(applicationContext.getBean(ServerConfig.class).getSingerURL() + "/query/" + singerQueryController.getTfName().getText());
-                List<Singer> singerList = JSON.parseArray(responseString, Singer.class);
-                if (singerList != null && singerList.size() > 0){
-                    ObservableList<Singer> observableList = FXCollections.observableArrayList();
-                    observableList.addAll(singerList);
-                    return observableList;
-                }else {
-                    return null;
-                }
+//                System.out.println(applicationContext.getBean(ServerConfig.class).getSingerURL() + "/query/" + singerQueryController.getTfName().getText());
+//                String responseString = HttpClientUtils.executeGet(applicationContext.getBean(ServerConfig.class).getSingerURL() + "/query/" + singerQueryController.getTfName().getText());
+//                List<Singer> singerList = JSON.parseArray(responseString, Singer.class);
+//                if (singerList != null && singerList.size() > 0){
+//                    ObservableList<Singer> observableList = FXCollections.observableArrayList();
+//                    observableList.addAll(singerList);
+//                    return observableList;
+//                }else {
+//                    return null;
+//                }
+                return null;
             }
         };
         return task;

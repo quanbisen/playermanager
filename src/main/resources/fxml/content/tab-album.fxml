@@ -28,9 +28,10 @@
                     <columns>
                         <TableColumn fx:id="columnID" prefWidth="88.0" text="ID" />
                         <TableColumn fx:id="columnAlbum" prefWidth="113.0" text="专辑名称" />
-                        <TableColumn fx:id="columnSinger" prefWidth="103.0" text="歌手" />
-                        <TableColumn fx:id="columnPublishTime" prefWidth="144.0" text="发布时间" />
-                        <TableColumn fx:id="columnDescription" prefWidth="249.0" text="描述" />
+                        <TableColumn fx:id="columnSinger" prefWidth="90.0" text="歌手" />
+                  <TableColumn fx:id="columnSongCount" prefWidth="88.0" text="歌曲数量" />
+                        <TableColumn fx:id="columnPublishTime" prefWidth="157.0" text="发布时间" />
+                        <TableColumn fx:id="columnDescription" prefWidth="160.0" text="描述" />
                     </columns>
                     <placeholder>
                         <Label text="" />

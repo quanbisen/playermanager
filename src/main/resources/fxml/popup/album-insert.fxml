@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
@@ -17,7 +15,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="root" maxHeight="370.0" maxWidth="600.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="370.0" prefWidth="600.0" style="-fx-border-color: #666666;-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.popup.AlbumInsertController">
+<BorderPane fx:id="root" maxHeight="370.0" maxWidth="600.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="370.0" prefWidth="600.0" style="-fx-border-color: #666666;-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.popup.AlbumInsertController">
     <top>
         <HBox alignment="CENTER" prefHeight="33.0" prefWidth="500.0" style="-fx-border-color: #E4E4E3; -fx-border-width: 0 0 1 0;" BorderPane.alignment="CENTER">
             <children>
@@ -42,40 +40,25 @@
                         </Label>
                     </children>
                 </StackPane>
-                <TextField fx:id="tfWeight" layoutX="68.0" layoutY="150.0" prefHeight="30.0" prefWidth="124.0" promptText="可选" />
-                <Label layoutX="22.0" layoutY="27.0" text="名字：" />
-                <TextField fx:id="tfHeight" layoutX="67.0" layoutY="105.0" prefHeight="30.0" prefWidth="124.0" promptText="可选" />
+                <Label layoutX="22.0" layoutY="27.0" text="名称：" />
                 <TextField fx:id="tfName" layoutX="67.0" layoutY="20.0" prefHeight="30.0" prefWidth="150.0" />
                 <Button fx:id="btnUpload" layoutX="241.0" layoutY="274.0" mnemonicParsing="false" onAction="#onClickedConfirm" text="确定" />
                 <Button fx:id="btnCancel" layoutX="313.0" layoutY="274.0" mnemonicParsing="false" onAction="#onClickedCancel" text="取消" />
-                <DatePicker fx:id="dpBirthday" layoutX="68.0" layoutY="61.0" prefHeight="30.0" prefWidth="150.0" promptText="可选" />
-                <Label layoutX="22.0" layoutY="68.0" text="生日：" />
-                <Label layoutX="199.0" layoutY="112.0" text="cm" />
-                <Label layoutX="199.0" layoutY="155.0" text="kg" />
-                <Label layoutX="22.0" layoutY="112.0" text="身高：" />
-                <Label layoutX="22.0" layoutY="157.0" text="体重：" />
-                <Label layoutX="22.0" layoutY="199.0" text="星座：" />
+                <Label layoutX="22.0" layoutY="68.0" text="歌手：" />
                 <TextArea fx:id="taDescription" layoutX="282.0" layoutY="20.0" prefHeight="204.0" prefWidth="150.0" promptText="可选" wrapText="true" />
                 <Label layoutX="237.0" layoutY="25.0" text="描述：" />
-                <ComboBox fx:id="cbConstellation" layoutX="68.0" layoutY="194.0" prefHeight="30.0" prefWidth="150.0" value="白羊座">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="白羊座" />
-                            <String fx:value="金牛座" />
-                            <String fx:value="双子座" />
-                            <String fx:value="巨蟹座" />
-                            <String fx:value="狮子座" />
-                            <String fx:value="处女座" />
-                            <String fx:value="天秤座" />
-                            <String fx:value="天蝎座" />
-                            <String fx:value="射手座" />
-                            <String fx:value="魔羯座" />
-                            <String fx:value="水瓶座" />
-                            <String fx:value="双鱼座" />
-                        </FXCollections>
-                    </items>
-                </ComboBox>
-                <ProgressIndicator visible="false" fx:id="progressIndicator" layoutX="289.0" layoutY="243.0" prefHeight="20.0" prefWidth="20.0" />
+                <ProgressIndicator fx:id="progressIndicator" layoutX="289.0" layoutY="243.0" prefHeight="20.0" prefWidth="20.0" visible="false" />
+            <TextField fx:id="tfSinger" layoutX="66.0" layoutY="63.0" prefHeight="30.0" prefWidth="101.0" promptText="输入歌手信息" />
+            <Button fx:id="btnQuery" layoutX="177.0" layoutY="66.0" mnemonicParsing="false" onAction="#onClickedQuery" text="查询" />
+            <TableView fx:id="tableViewSinger" layoutX="17.0" layoutY="108.0" prefHeight="116.0" prefWidth="200.0" onMouseClicked="#onClickedSelect">
+              <columns>
+                <TableColumn fx:id="columnID" prefWidth="72.0" text="ID" />
+                <TableColumn fx:id="columnSinger" prefWidth="126.0" text="歌手名称" />
+              </columns>
+                <placeholder>
+                    <Label text="输入歌手查询，选择选中" />
+                </placeholder>
+            </TableView>
             </children>
         </AnchorPane>
     </center>

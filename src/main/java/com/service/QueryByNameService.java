@@ -46,15 +46,15 @@ public class QueryByNameService extends javafx.concurrent.Service<ObservableList
                 String url = null;
                 switch (category){
                     case Singer:{
-                        url = serverConfig.getSingerURL() + "/queryByName";
+                        url = serverConfig.getSingerURL() + "/queryByNameLike";
                         break;
                     }
                     case Album:{
-                        url = serverConfig.getAlbumURL() + "/queryByName";
+                        url = serverConfig.getAlbumURL() + "/queryByNameLike";
                         break;
                     }
                     case Song:{
-                        url = serverConfig.getSongURL() + "/queryByName";
+                        url = serverConfig.getSongURL() + "/queryByNameLike";
                         break;
                     }
                     default:
@@ -62,9 +62,14 @@ public class QueryByNameService extends javafx.concurrent.Service<ObservableList
                 MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create().addTextBody("name",name, ContentType.create("text/plain", Charset.forName("utf-8")));
                 String responseString = HttpClientUtils.executePost(url,multipartEntityBuilder.build());
                 List list = ParserUtils.parseResponseStringList(responseString,category);
-                ObservableList observableList = FXCollections.observableArrayList();
-                observableList.addAll(list);
-                return observableList;
+                if (list != null && list.size() > 0){
+                    ObservableList observableList = FXCollections.observableArrayList();
+                    observableList.addAll(list);
+                    return observableList;
+                }else {
+                    return null;
+                }
+
             }
         };
         return task;

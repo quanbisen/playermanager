@@ -11,7 +11,6 @@ import com.util.StageUtils;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
@@ -27,7 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Controller
-@Scope("prototype")
+@Scope("singleton")
 public class TabAlbumController {
 
     @FXML
@@ -99,7 +98,7 @@ public class TabAlbumController {
 
     }
 
-    private void updateTable(){
+    public void updateTable(){
         QueryAllService queryAllService = applicationContext.getBean(QueryAllService.class);
         queryAllService.setCategoryEnum(Category.Album);
         queryAllService.start();
@@ -148,10 +147,10 @@ public class TabAlbumController {
                 alert.setContentText("还没有选中歌曲");
                 alert.showAndWait();
             }else {
-                String string = HttpClientUtils.executeDelete(applicationContext.getBean(ServerConfig.class).getSongURL() + "/delete/" + album.getId());
+                String string = HttpClientUtils.executeDelete(applicationContext.getBean(ServerConfig.class).getAlbumURL() + "/delete/" + album.getId());
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("提示");
-                if (string.equals("1")){    //如果返回等于一
+                if (string.equals("success")){    //如果返回等于一
                     alert.setContentText("删除成功");
                     tableViewAlbum.getItems().remove(album);
                 }else {
