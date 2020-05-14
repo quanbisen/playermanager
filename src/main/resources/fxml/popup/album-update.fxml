@@ -30,7 +30,7 @@
          <children>
             <StackPane layoutX="346.0" prefHeight="150.0" prefWidth="150.0" style="-fx-border-color: #E4E4E3; -fx-border-width: 0 1 1 1;">
                <children>
-                  <ImageView fx:id="ivAlbum" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="ivAlbum" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#onClickedAlbumImage"/>
                </children>
             </StackPane>
             <Label layoutX="24.0" layoutY="20.0" text="专辑名称：" />

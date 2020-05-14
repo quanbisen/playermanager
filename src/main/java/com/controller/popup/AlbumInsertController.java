@@ -6,12 +6,14 @@ import com.pojo.Singer;
 import com.service.InsertAlbumService;
 import com.service.QueryByNameService;
 import com.util.AlertUtils;
+import com.util.StageUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -71,24 +73,18 @@ public class AlbumInsertController {
 
     @FXML
     public void onClickedChooseImageFile(MouseEvent mouseEvent) throws IOException {
-        FileChooser imageFileChooser = new FileChooser();
-        imageFileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        FileChooser.ExtensionFilter extensionFilter1 = new FileChooser.ExtensionFilter("JPG图片(*.jpg)","*.jpg");
-        FileChooser.ExtensionFilter extensionFilter2 = new FileChooser.ExtensionFilter("PNG图片(*.png)","*.png");
-        imageFileChooser.getExtensionFilters().addAll(
-                extensionFilter1,
-                extensionFilter2
-        );
-        imageFile = imageFileChooser.showOpenDialog(ivImage.getScene().getWindow());
-        if (imageFile != null){
-            if (imageFile.length() / 1024 /1024 > 1){ //文件大小大于1m，不允许选择
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("提示信息");
-                alert.setContentText("图片文件大于1M");
-                alert.showAndWait();
-            }else {
-                Image image = new Image("file:" + imageFile.toPath().toString(),150,150,true,true);
-                ivImage.setImage(image);
+        if (mouseEvent.getButton() == MouseButton.PRIMARY){
+            imageFile = StageUtils.getImageFileChooser().showOpenDialog(ivImage.getScene().getWindow());
+            if (imageFile != null){
+                if (imageFile.length() / 1024 /1024 > 1){ //文件大小大于1m，不允许选择
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("提示信息");
+                    alert.setContentText("图片文件大于1M");
+                    alert.showAndWait();
+                }else {
+                    Image image = new Image("file:" + imageFile.toPath().toString(),150,150,true,true);
+                    ivImage.setImage(image);
+                }
             }
         }
     }

@@ -5,8 +5,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.io.File;
 
 /**
  * @author super lollipop
@@ -55,5 +58,17 @@ public final class StageUtils {
         primaryStage.heightProperty().addListener(((observable, oldValue, newValue) -> {
             stage.setY(borderPane.getHeight() - stage.getHeight() + primaryStage.getY() + offSetY);
         }));
+    }
+
+    public static FileChooser getImageFileChooser(){
+        FileChooser imageFileChooser = new FileChooser();
+        imageFileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        FileChooser.ExtensionFilter extensionFilter1 = new FileChooser.ExtensionFilter("JPG图片(*.jpg)","*.jpg");
+        FileChooser.ExtensionFilter extensionFilter2 = new FileChooser.ExtensionFilter("PNG图片(*.png)","*.png");
+        imageFileChooser.getExtensionFilters().addAll(
+                extensionFilter1,
+                extensionFilter2
+        );
+        return imageFileChooser;
     }
 }

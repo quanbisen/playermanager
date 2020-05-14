@@ -11,7 +11,6 @@ import java.util.Properties;
  * @date 20-2-22
  */
 @Component
-@Scope("singleton")
 public class ServerConfig {
 
     private String server;
