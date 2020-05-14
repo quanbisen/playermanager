@@ -22,7 +22,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 @Controller
 @Scope("prototype")
@@ -35,9 +34,6 @@ public class AlbumInsertController {
     private TextField tfName;
 
     @FXML
-    private Button btnUpload;
-
-    @FXML
     private Button btnCancel;
 
     @FXML
@@ -48,9 +44,6 @@ public class AlbumInsertController {
 
     @FXML
     private TextField tfSinger;
-
-    @FXML
-    private Button btnQuery;
 
     @FXML
     private TableView<Singer> tableViewSinger;

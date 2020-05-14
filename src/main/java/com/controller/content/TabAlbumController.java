@@ -18,7 +18,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -26,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Controller
-@Scope("singleton")
 public class TabAlbumController {
 
     @FXML
@@ -39,16 +37,7 @@ public class TabAlbumController {
     private Button btnAdd;
 
     @FXML
-    private Button btnModify;
-
-    @FXML
-    private Button btnDelete;
-
-    @FXML
     private Button btnQuery;
-
-    @FXML
-    private Button btnRefresh;
 
     @FXML
     private TableView<Album> tableViewAlbum;
@@ -63,6 +52,9 @@ public class TabAlbumController {
     private TableColumn<Album, String> columnSinger;
 
     @FXML
+    private TableColumn<Album,Integer> columnSongCount;
+
+    @FXML
     private TableColumn<Album, Date> columnPublishTime;
 
     @FXML
@@ -71,10 +63,15 @@ public class TabAlbumController {
     @Resource
     private ApplicationContext applicationContext;
 
+    public TableView<Album> getTableViewAlbum() {
+        return tableViewAlbum;
+    }
+
     public void initialize(){
         columnID.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnAlbum.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnSinger.setCellValueFactory(new PropertyValueFactory<>("singerName"));
+        columnSongCount.setCellValueFactory(new PropertyValueFactory<>("songCount"));
         columnPublishTime.setCellValueFactory(new PropertyValueFactory<>("publishTime"));
         columnDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         columnPublishTime.setCellFactory(c -> {
@@ -126,14 +123,13 @@ public class TabAlbumController {
             if (album == null){
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("提示");
-                alert.setContentText("还没有选中歌曲");
+                alert.setContentText("还没有选中专辑");
                 alert.showAndWait();
             }else {
-                Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/song-update.fxml").load());
+                Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/album-update.fxml").load());
                 StageUtils.synchronizeCenter((Stage) btnAdd.getScene().getWindow(),stage);
                 stage.show();
             }
-
         }
     }
 

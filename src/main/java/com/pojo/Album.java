@@ -13,6 +13,7 @@ public class Album {
     private String name;
     private Integer singerID;
     private String singerName;
+    private Integer songCount;
     private Date publishTime;
     private String description;
     private String imageURL;
