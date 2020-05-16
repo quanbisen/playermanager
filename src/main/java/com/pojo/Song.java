@@ -2,26 +2,27 @@ package com.pojo;
 
 import lombok.*;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * @author super lollipop
  * @date 20-1-24
  */
 @Data
 @AllArgsConstructor
-@RequiredArgsConstructor
 @NoArgsConstructor
 public class Song {
     private Integer id;
-    @NonNull
     private String name;
-    @NonNull
-    private String singer;
-    @NonNull
-    private String album;
-    @NonNull
+    private Album albumObject;
+    private String albumName;
+    private List<Singer> singerList;
     private String totalTime;
     private String size;
-    @NonNull
+    private Date publishTime;
+    private Integer albumID;
+    private Date collectTime;
     private String resourceURL;
     private String lyricURL;
     private String albumURL;

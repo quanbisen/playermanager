@@ -4,7 +4,7 @@ import com.config.Category;
 import com.pojo.Album;
 import com.pojo.Singer;
 import com.service.InsertAlbumService;
-import com.service.QueryByNameService;
+import com.service.QueryByNameLikeService;
 import com.util.AlertUtils;
 import com.util.StageUtils;
 import javafx.event.ActionEvent;
@@ -15,7 +15,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -128,12 +127,12 @@ public class AlbumInsertController {
     @FXML
     public void onClickedQuery(ActionEvent actionEvent) {
         if (!tfSinger.getText().trim().equals("")){
-            QueryByNameService queryByNameService = applicationContext.getBean(QueryByNameService.class);
-            queryByNameService.setCategory(Category.Singer);
-            queryByNameService.setName(tfSinger.getText());
-            progressIndicator.visibleProperty().bind(queryByNameService.runningProperty());
-            queryByNameService.setOnSucceeded(event -> tableViewSinger.setItems(queryByNameService.getValue()));
-            queryByNameService.start();
+            QueryByNameLikeService queryByNameLikeService = applicationContext.getBean(QueryByNameLikeService.class);
+            queryByNameLikeService.setCategory(Category.Singer);
+            queryByNameLikeService.setName(tfSinger.getText());
+            progressIndicator.visibleProperty().bind(queryByNameLikeService.runningProperty());
+            queryByNameLikeService.setOnSucceeded(event -> tableViewSinger.setItems(queryByNameLikeService.getValue()));
+            queryByNameLikeService.start();
         }
     }
 

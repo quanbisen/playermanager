@@ -1,12 +1,16 @@
 package com.controller.content;
 
 import com.application.SpringFXMLLoader;
-import com.config.ServerConfig;
+import com.config.Category;
+import com.pojo.Album;
+import com.pojo.Singer;
 import com.pojo.Song;
-import com.service.QueryAllSongService;
-import com.util.HttpClientUtils;
+import com.service.DeleteByIDService;
+import com.service.QueryAllService;
+import com.util.AlertUtils;
 import com.util.StageUtils;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -20,6 +24,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -62,7 +69,7 @@ public class TabSongController {
     private TableColumn<Song, String> columnName;
 
     @FXML
-    private TableColumn<Song, String> columnSinger;
+    private TableColumn<Song, List<Singer>> columnSinger;
 
     @FXML
     private TableColumn<Song, String> columnAlbum;
@@ -73,8 +80,21 @@ public class TabSongController {
     @FXML
     private TableColumn<Song, String> columnSize;
 
-    @Autowired
+    @FXML
+    private TableColumn<Song, Date> columnPublishTime;
+
+    @FXML
+    private TableColumn<Song,Album> columnCollectAlbum;
+
+    @FXML
+    private TableColumn<Song,Date> columnCollectTime;
+
     private ApplicationContext applicationContext;
+
+    @Autowired
+    public void constructor(ApplicationContext applicationContext){
+        this.applicationContext = applicationContext;
+    }
 
     public ProgressIndicator getProgressIndicator() {
         return progressIndicator;
@@ -100,19 +120,63 @@ public class TabSongController {
 
         columnID.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        columnSinger.setCellValueFactory(new PropertyValueFactory<>("singer"));
-        columnAlbum.setCellValueFactory(new PropertyValueFactory<>("album"));
+        columnSinger.setCellValueFactory(param -> {
+            StringBuilder singer = new StringBuilder();
+            for (int i = 0; i < param.getValue().getSingerList().size(); i++) {
+                singer.append(param.getValue().getSingerList().get(i).getName());
+                if (i != param.getValue().getSingerList().size() -1){
+                    singer.append("/");
+                }
+            }
+            SimpleObjectProperty simpleObjectProperty = new SimpleObjectProperty(singer.toString());
+            return simpleObjectProperty;
+        });
+        columnAlbum.setCellValueFactory(new PropertyValueFactory<>("albumName"));
         columnTotalTime.setCellValueFactory(new PropertyValueFactory<>("totalTime"));
         columnSize.setCellValueFactory(new PropertyValueFactory<>("size"));
-
+        columnPublishTime.setCellValueFactory(new PropertyValueFactory<>("publishTime"));
+        formatDateColumn(columnPublishTime);
+        columnCollectAlbum.setCellValueFactory(param -> {
+            if (param.getValue().getAlbumObject() != null){
+                SimpleObjectProperty simpleObjectProperty = new SimpleObjectProperty(param.getValue().getAlbumObject().getName());
+                return simpleObjectProperty;
+            }else {
+                return null;
+            }
+        });
+        columnCollectTime.setCellValueFactory(new PropertyValueFactory<>("collectTime"));
+        formatDateColumn(columnCollectTime);
         updateTable();
     }
 
     public void updateTable(){
-        QueryAllSongService queryAllSongService = applicationContext.getBean(QueryAllSongService.class);
-        progressIndicator.visibleProperty().bind(queryAllSongService.runningProperty());
-        tableViewSong.itemsProperty().bind(queryAllSongService.valueProperty());
-        queryAllSongService.start();
+        QueryAllService queryAllService = applicationContext.getBean(QueryAllService.class);
+        queryAllService.setCategory(Category.Song);
+        queryAllService.setOnSucceeded(event -> {
+            tableViewSong.setItems(queryAllService.getValue());
+        });
+        progressIndicator.visibleProperty().bind(queryAllService.runningProperty());
+        queryAllService.start();
+    }
+
+    private void formatDateColumn(TableColumn tableColumn){
+        tableColumn.setCellFactory(c -> {
+            TableCell<Singer, Date> cell = new TableCell<Singer, Date>() {
+                private SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+                @Override
+                protected void updateItem(Date item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if(empty) {
+                        setText(null);
+                    }
+                    else {
+                        if(item != null)
+                            this.setText(format.format(item));
+                    }
+                }
+            };
+            return cell;
+        });
     }
 
     @FXML
@@ -148,21 +212,21 @@ public class TabSongController {
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
             Song song = tableViewSong.getSelectionModel().getSelectedItem();
             if (song == null){
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("提示");
-                alert.setContentText("还没有选中歌曲");
-                alert.showAndWait();
+                AlertUtils.showError("还没有选中歌曲");
             }else {
-                String string = HttpClientUtils.executeDelete(applicationContext.getBean(ServerConfig.class).getSongURL() + "/delete/" + song.getId());
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("提示");
-                if (string.equals("1")){    //如果返回等于一
-                    alert.setContentText("删除成功");
-                    tableViewSong.getItems().remove(song);
-                }else {
-                    alert.setContentText("删除失败");
-                }
-                alert.showAndWait();
+                DeleteByIDService deleteByIDService = applicationContext.getBean(DeleteByIDService.class);
+                deleteByIDService.setCategory(Category.Song);
+                deleteByIDService.setId(song.getId());
+                progressIndicator.visibleProperty().bind(deleteByIDService.runningProperty());
+                deleteByIDService.setOnSucceeded(event -> {
+                    if (deleteByIDService.getValue().equals("success")){
+                        AlertUtils.showInformation("删除成功");
+                        updateTable();
+                    }else {
+                        AlertUtils.showInformation("删除失败");
+                    }
+                });
+                deleteByIDService.start();
             }
         }
     }

@@ -4,3 +4,6 @@
     -fx-tab-max-width: 40;
     -fx-min-width: 40;
 }
+.tab:selected{
+    -fx-background-color: #FAFAFC;
+}

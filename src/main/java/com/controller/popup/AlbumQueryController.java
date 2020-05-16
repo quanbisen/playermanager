@@ -2,7 +2,7 @@ package com.controller.popup;
 
 import com.config.Category;
 import com.pojo.Album;
-import com.service.QueryByNameService;
+import com.service.QueryByNameLikeService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -49,15 +49,15 @@ public class AlbumQueryController {
 
     @FXML
     public void onClickedConfirm(ActionEvent actionEvent) {
-        QueryByNameService queryByNameService = applicationContext.getBean(QueryByNameService.class);
-        queryByNameService.setCategory(Category.Album);
-        queryByNameService.setName(tfName.getText());
-        progressIndicator.visibleProperty().bind(queryByNameService.runningProperty());
+        QueryByNameLikeService queryByNameLikeService = applicationContext.getBean(QueryByNameLikeService.class);
+        queryByNameLikeService.setCategory(Category.Album);
+        queryByNameLikeService.setName(tfName.getText());
+        progressIndicator.visibleProperty().bind(queryByNameLikeService.runningProperty());
         onClickedCancel(actionEvent);
-        queryByNameService.setOnSucceeded(event -> {
-            tableViewAlbum.setItems(queryByNameService.getValue());
+        queryByNameLikeService.setOnSucceeded(event -> {
+            tableViewAlbum.setItems(queryByNameLikeService.getValue());
         });
-        queryByNameService.start();
+        queryByNameLikeService.start();
     }
 
     @FXML

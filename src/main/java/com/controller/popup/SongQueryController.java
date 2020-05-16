@@ -1,6 +1,8 @@
 package com.controller.popup;
 
+import com.config.Category;
 import com.controller.content.TabSongController;
+import com.service.QueryByNameLikeService;
 import com.service.QuerySongByNameService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,11 +25,15 @@ public class SongQueryController {
     @FXML
     private Button btnCancel;
 
-    @Autowired
     private ApplicationContext applicationContext;
 
-    @Autowired
     private TabSongController tabSongController;
+
+    @Autowired
+    public void constructor(ApplicationContext applicationContext,TabSongController tabSongController){
+        this.applicationContext = applicationContext;
+        this.tabSongController = tabSongController;
+    }
 
     public TextField getTfName() {
         return tfName;
@@ -41,9 +47,18 @@ public class SongQueryController {
     @FXML
     public void onClickedConfirm(ActionEvent actionEvent) {
         onClickedCancel(actionEvent);
-        QuerySongByNameService querySongByNameService = applicationContext.getBean(QuerySongByNameService.class);
-        tabSongController.getProgressIndicator().visibleProperty().bind(querySongByNameService.runningProperty());
-        tabSongController.getTableViewSong().itemsProperty().bind(querySongByNameService.valueProperty());
-        querySongByNameService.start();
+        if (!tfName.getText().trim().equals("")){
+            QueryByNameLikeService queryByNameLikeService = applicationContext.getBean(QueryByNameLikeService.class);
+            queryByNameLikeService.setName(tfName.getText().trim());
+            queryByNameLikeService.setCategory(Category.Song);
+            tabSongController.getProgressIndicator().visibleProperty().bind(queryByNameLikeService.runningProperty());
+            queryByNameLikeService.setOnSucceeded(event -> {
+                if (tabSongController.getTableViewSong().itemsProperty().isBound()){
+                    tabSongController.getTableViewSong().itemsProperty().unbind();
+                }
+                tabSongController.getTableViewSong().setItems(queryByNameLikeService.getValue());
+            });
+            queryByNameLikeService.start();
+        }
     }
 }

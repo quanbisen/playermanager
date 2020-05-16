@@ -3,7 +3,7 @@ package com.controller.popup;
 import com.config.Category;
 import com.controller.content.TabSingerController;
 import com.pojo.Singer;
-import com.service.QueryByNameService;
+import com.service.QueryByNameLikeService;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -48,19 +48,19 @@ public class SingerQueryController {
     @FXML
     public void onClickedConfirm(ActionEvent actionEvent) {
         if (!tfName.getText().trim().equals("")){
-            QueryByNameService queryByNameService = applicationContext.getBean(QueryByNameService.class);
-            tabSingerController.getProgressIndicator().visibleProperty().bind(queryByNameService.runningProperty());
-            queryByNameService.setCategory(Category.Singer);
-            queryByNameService.setName(tfName.getText());
-            queryByNameService.setOnSucceeded(event -> {
-                ObservableList<Singer> observableList = queryByNameService.getValue();
+            QueryByNameLikeService queryByNameLikeService = applicationContext.getBean(QueryByNameLikeService.class);
+            tabSingerController.getProgressIndicator().visibleProperty().bind(queryByNameLikeService.runningProperty());
+            queryByNameLikeService.setCategory(Category.Singer);
+            queryByNameLikeService.setName(tfName.getText());
+            queryByNameLikeService.setOnSucceeded(event -> {
+                ObservableList<Singer> observableList = queryByNameLikeService.getValue();
                 TableView<Singer> tableViewSinger = tabSingerController.getTableViewSinger();
                 if (tableViewSinger.itemsProperty().isBound()){
                     tableViewSinger.itemsProperty().unbind();
                 }
                 tabSingerController.getTableViewSinger().setItems(observableList);
             });
-            queryByNameService.start();
+            queryByNameLikeService.start();
         }
         onClickedCancel(actionEvent);
     }

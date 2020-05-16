@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @Scope("prototype")
-public class QueryByNameService extends javafx.concurrent.Service<ObservableList> {
+public class QueryByNameLikeService extends javafx.concurrent.Service<ObservableList> {
 
     private Category category;
 
@@ -59,6 +59,7 @@ public class QueryByNameService extends javafx.concurrent.Service<ObservableList
                     }
                     default:
                 }
+                System.out.println(name);
                 MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create().addTextBody("name",name, ContentType.create("text/plain", Charset.forName("utf-8")));
                 String responseString = HttpClientUtils.executePost(url,multipartEntityBuilder.build());
                 List list = ParserUtils.parseResponseStringList(responseString,category);

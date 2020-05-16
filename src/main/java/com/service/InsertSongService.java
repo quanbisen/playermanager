@@ -1,9 +1,14 @@
 package com.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.config.ServerConfig;
 import com.controller.popup.SongInsertController;
 import com.controller.content.TabSongController;
+import com.pojo.Album;
+import com.pojo.Singer;
 import com.pojo.Song;
+import com.util.AlertUtils;
+import com.util.HttpClientUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
@@ -21,6 +26,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.List;
 
 /**
  * @author super lollipop
@@ -30,44 +37,44 @@ import java.nio.charset.Charset;
 @Scope("prototype")
 public class InsertSongService extends javafx.concurrent.Service<Void> {
 
-    @Autowired
     private SongInsertController songInsertController;
 
-    @Autowired
+    private TabSongController tabSongController;
+
     private ApplicationContext applicationContext;
 
     @Autowired
-    private TabSongController tabSongController;
+    public void constructor(SongInsertController songInsertController,TabSongController tabSongController,ApplicationContext applicationContext){
+        this.songInsertController = songInsertController;
+        this.tabSongController = tabSongController;
+        this.applicationContext = applicationContext;
+    }
 
     @Override
     protected Task<Void> createTask() {
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                String url = applicationContext.getBean(ServerConfig.class).getSongURL() + "/upload";
+                String url = applicationContext.getBean(ServerConfig.class).getSongURL() + "/insert";
                 Song song = new Song();
                 song.setName(songInsertController.getTfTitle().getText());
-                song.setSinger(songInsertController.getTfArtist().getText());
-                song.setAlbum(songInsertController.getTfAlbum().getText());
+                song.setSingerList((List<Singer>) songInsertController.getTfArtist().getUserData());
+                if (songInsertController.getTfAlbum().getUserData() != null){
+                    song.setAlbumObject((Album) songInsertController.getTfAlbum().getUserData());
+                }
+                song.setAlbumName(songInsertController.getTfAlbum().getText());
                 song.setTotalTime(songInsertController.getLabTotalTime().getText());
                 song.setSize(songInsertController.getLabSize().getText());
-                String responseString = upload(url,songInsertController.getSongFile(),song,songInsertController.getLyricFile(),songInsertController.getAlbumBytes());
-                if (responseString.equals("success")){  //返回的信息是success，证明上传成功了。
-                    Platform.runLater(()->{
-                        songInsertController.getLabTotalTime().getScene().getWindow().hide();   //关闭窗口
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setContentText("新增歌曲成功");
-                        alert.showAndWait();
+                String responseString = upload(url,song,songInsertController.getSongFile(),songInsertController.getLyricFile(),songInsertController.getAlbumFile());
+                Platform.runLater(()->{
+                    songInsertController.getLabTotalTime().getScene().getWindow().hide();   //关闭窗口
+                    if (responseString.equals("success")){  //返回的信息是success，证明上传成功了。
+                        AlertUtils.showInformation("新增歌曲成功");
                         tabSongController.updateTable();
-                    });
-                }else {
-                    Platform.runLater(()->{
-                        songInsertController.getLabTotalTime().getScene().getWindow().hide();   //关闭窗口
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setContentText("新增歌曲失败");
-                        alert.showAndWait();
-                    });
-                }
+                    }else {
+                        AlertUtils.showInformation("新增歌曲失败");
+                    }
+                });
                 return null;
             }
         };
@@ -75,26 +82,14 @@ public class InsertSongService extends javafx.concurrent.Service<Void> {
     }
 
     /**上传文件的函数
-     * @param url 服务器发送地址*/
-    private String upload(String url, File songFile, Song song , File lyricFile, byte[] bytes){
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost httpPost = new HttpPost(url);  //"http://127.0.0.1:8080/OnlineExam_war_exploded/Student/HandleUploadImage"
-        MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create().
-                addBinaryBody("songFile",songFile).     //歌曲文件
-                addTextBody("name",song.getName(), ContentType.create("text/plain", Charset.forName("UTF-8"))).
-                addTextBody("singer",song.getSinger(),ContentType.create("text/plain", Charset.forName("UTF-8"))).
-                addTextBody("album",song.getAlbum(),ContentType.create("text/plain", Charset.forName("UTF-8"))).
-                addTextBody("totalTime",song.getTotalTime(),ContentType.create("text/plain", Charset.forName("UTF-8"))).
-                addTextBody("size",song.getSize(),ContentType.create("text/plain", Charset.forName("UTF-8"))).
-                addBinaryBody("lyricFile",lyricFile).
-                addBinaryBody("bytes",bytes, ContentType.DEFAULT_BINARY,"fileName.jpg");
-        httpPost.setEntity(multipartEntityBuilder.build());
-        try {
-            HttpResponse response = httpClient.execute(httpPost);
-            return EntityUtils.toString(response.getEntity());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+     * @param url 服务器发送地址
+     * @return responseString */
+    private String upload(String url, Song song , File songFile, File lyricFile, File albumFile) throws IOException {
+        MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
+        multipartEntityBuilder.addTextBody("song", JSONObject.toJSONString(song),ContentType.create("text/plain",Charset.forName("utf-8"))).
+                addBinaryBody("songBytes", Files.readAllBytes(songFile.toPath()),ContentType.create("multipart/form-data",Charset.forName("utf-8")),songFile.getName()).
+                addBinaryBody("lyricBytes", Files.readAllBytes(lyricFile.toPath()),ContentType.create("multipart/form-data",Charset.forName("utf-8")),lyricFile.getName()).
+                addBinaryBody("albumBytes", Files.readAllBytes(albumFile.toPath()),ContentType.create("multipart/form-data",Charset.forName("utf-8")),albumFile.getName());
+        return HttpClientUtils.executePost(url,multipartEntityBuilder.build());
     }
 }

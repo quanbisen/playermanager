@@ -97,12 +97,11 @@ public class TabAlbumController {
 
     public void updateTable(){
         QueryAllService queryAllService = applicationContext.getBean(QueryAllService.class);
-        queryAllService.setCategoryEnum(Category.Album);
+        queryAllService.setCategory(Category.Album);
         queryAllService.start();
         progressIndicator.visibleProperty().bind(queryAllService.runningProperty());
         queryAllService.setOnSucceeded(event -> {
-            ObservableList observableList = queryAllService.getValue();
-            tableViewAlbum.setItems((ObservableList<Album>) observableList);
+            tableViewAlbum.setItems(queryAllService.getValue());
             tableViewAlbum.getSelectionModel().clearSelection();
         });
     }

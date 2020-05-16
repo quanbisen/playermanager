@@ -26,8 +26,8 @@ public class QueryAllService extends javafx.concurrent.Service<ObservableList> {
         this.serverConfig = serverConfig;
     }
 
-    public void setCategoryEnum(Category categoryEnum) {
-        this.category = categoryEnum;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @Override

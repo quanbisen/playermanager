@@ -1,9 +1,10 @@
 package com.controller.content;
 
 import com.application.SpringFXMLLoader;
+import com.config.Category;
 import com.config.ServerConfig;
 import com.pojo.Singer;
-import com.service.QueryAllSingerService;
+import com.service.QueryAllService;
 import com.util.AlertUtils;
 import com.util.HttpClientUtils;
 import com.util.StageUtils;
@@ -114,10 +115,13 @@ public class TabSingerController {
 
     /**请求内容更新表格*/
     public void updateTable(){
-        QueryAllSingerService queryAllSingerService = applicationContext.getBean(QueryAllSingerService.class);
-        tableViewSinger.itemsProperty().bind(queryAllSingerService.valueProperty());
-        progressIndicator.visibleProperty().bind(queryAllSingerService.runningProperty());
-        queryAllSingerService.start();
+        QueryAllService queryAllService = applicationContext.getBean(QueryAllService.class);
+        queryAllService.setCategory(Category.Singer);
+        queryAllService.setOnSucceeded(event -> {
+            tableViewSinger.setItems(queryAllService.getValue());
+        });
+        progressIndicator.visibleProperty().bind(queryAllService.runningProperty());
+        queryAllService.start();
     }
 
     @FXML

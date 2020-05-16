@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="300.0" maxWidth="500.0" minHeight="350.0" minWidth="-Infinity" prefHeight="385.0" prefWidth="500.0" style="-fx-border-color: #666666;-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.popup.SongUpdateController">
+<BorderPane maxHeight="300.0" maxWidth="500.0" minHeight="350.0" minWidth="-Infinity" prefHeight="385.0" prefWidth="502.0" style="-fx-border-color: #666666;-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.popup.SongUpdateController">
     <top>
         <HBox alignment="CENTER" prefHeight="40.0" prefWidth="498.0" style="-fx-border-color: #E4E4E3; -fx-border-width: 0 0 1 0;" BorderPane.alignment="CENTER">
             <children>
@@ -31,19 +31,21 @@
                   <ImageView fx:id="ivAlbum" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </StackPane>
-            <Label layoutX="32.0" layoutY="21.0" text="歌名：" />
-            <TextField fx:id="tfTitle" layoutX="87.0" layoutY="14.0" prefHeight="30.0" prefWidth="226.0" />
+            <Label layoutX="31.0" layoutY="21.0" text="歌名：" />
+            <TextField fx:id="tfTitle" layoutX="86.0" layoutY="14.0" prefHeight="30.0" prefWidth="100.0" />
             <Label layoutX="32.0" layoutY="67.0" text="歌手：" />
-            <TextField fx:id="tfArtist" layoutX="87.0" layoutY="60.0" prefHeight="30.0" prefWidth="226.0" />
+            <TextField fx:id="tfArtist" layoutX="86.0" layoutY="60.0" prefHeight="30.0" prefWidth="100.0" />
             <Label layoutX="32.0" layoutY="114.0" text="专辑：" />
-            <TextField fx:id="tfAlbum" layoutX="87.0" layoutY="107.0" prefHeight="30.0" prefWidth="226.0" />
-            <Label layoutX="133.0" layoutY="181.0" text="时长：" />
-            <Label fx:id="labTotalTime" layoutX="172.0" layoutY="181.0" text="00:00" />
-            <Label layoutX="241.0" layoutY="181.0" text="文件大小：" />
-            <Label fx:id="labSize" layoutX="306.0" layoutY="181.0" text="0M" />
-            <Button fx:id="btnUpload1" layoutX="185.0" layoutY="241.0" mnemonicParsing="false" onAction="#onClickedUpdate" text="更新" />
-            <Button fx:id="btnCancel1" layoutX="269.0" layoutY="241.0" mnemonicParsing="false" onAction="#onClickedCancel" text="取消" />
-            <ProgressIndicator fx:id="progressIndicator" layoutX="239.0" visible="false" layoutY="210.0" prefHeight="20.0" prefWidth="20.0" />
+            <TextField fx:id="tfAlbum" layoutX="86.0" layoutY="107.0" prefHeight="30.0" prefWidth="100.0" />
+            <Label layoutX="224.0" layoutY="20.0" text="时长：" />
+            <Label fx:id="labTotalTime" layoutX="263.0" layoutY="20.0" text="00:00" />
+            <Label layoutX="221.0" layoutY="65.0" text="文件大小：" />
+            <Label fx:id="labSize" layoutX="286.0" layoutY="65.0" text="0M" />
+            <Button fx:id="btnUpload" layoutX="185.0" layoutY="241.0" mnemonicParsing="false" onAction="#onClickedUpdate" text="更新" />
+            <Button fx:id="btnCancel" layoutX="269.0" layoutY="241.0" mnemonicParsing="false" onAction="#onClickedCancel" text="取消" />
+            <ProgressIndicator fx:id="progressIndicator" layoutX="239.0" layoutY="210.0" prefHeight="20.0" prefWidth="20.0" visible="false" />
+            <Label layoutX="221.0" layoutY="111.0" text="收录专辑：" />
+            <Label fx:id="labCollectAlbum" layoutX="287.0" layoutY="110.0" text="无" />
          </children>
       </AnchorPane>
    </center>

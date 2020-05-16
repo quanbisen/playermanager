@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -12,9 +14,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="482.0" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="482.0" prefWidth="500.0" style="-fx-border-color: #666666;-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.popup.SongInsertController">
+<BorderPane maxHeight="482.0" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="482.0" prefWidth="506.0" style="-fx-border-color: #666666;-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.popup.SongInsertController">
    <top>
-      <HBox alignment="CENTER" prefHeight="33.0" prefWidth="500.0" style="-fx-border-color: #E4E4E3; -fx-border-width: 0 0 1 0;" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="33.0" prefWidth="508.0" style="-fx-border-color: #E4E4E3; -fx-border-width: 0 0 1 0;" BorderPane.alignment="CENTER">
          <children>
             <Label text="新增歌曲上传">
                <font>
@@ -37,24 +39,47 @@
                   </Label>
                </children>
             </StackPane>
-            <TextField fx:id="tfSongPath" editable="false" layoutX="14.0" layoutY="34.0" prefHeight="30.0" prefWidth="226.0" />
-            <Button fx:id="btnChooseSongFile" layoutX="249.0" layoutY="36.0" mnemonicParsing="false" onAction="#onClickedChooseSongFile" prefHeight="26.0" prefWidth="96.0" text="选择歌曲文件" />
-            <TextField fx:id="tfLyricPath" editable="false" layoutX="14.0" layoutY="87.0" prefHeight="30.0" prefWidth="226.0" />
-            <Button fx:id="btnChooseLyricFile" layoutX="248.0" layoutY="89.0" mnemonicParsing="false" onAction="#onClickedChooseLyricFile" prefHeight="26.0" prefWidth="97.0" text="选择歌词文件" />
-            <Label layoutX="41.0" layoutY="202.0" text="歌名：" />
-            <TextField fx:id="tfTitle" layoutX="86.0" layoutY="195.0" prefHeight="30.0" prefWidth="226.0" />
-            <Label layoutX="41.0" layoutY="256.0" text="歌手：" />
-            <TextField fx:id="tfArtist" layoutX="86.0" layoutY="249.0" prefHeight="30.0" prefWidth="226.0" />
-            <Label layoutX="41.0" layoutY="303.0" text="专辑：" />
-            <TextField fx:id="tfAlbum" layoutX="86.0" layoutY="296.0" prefHeight="30.0" prefWidth="226.0" />
-            <Label layoutX="345.0" layoutY="202.0" text="时长：" />
-            <Label fx:id="labTotalTime" layoutX="387.0" layoutY="202.0" text="00:00" />
-            <Label layoutX="345.0" layoutY="256.0" text="文件大小：" />
-            <Label fx:id="labSize" layoutX="410.0" layoutY="256.0" text="0M" />
-            <Button layoutX="343.0" layoutY="298.0" mnemonicParsing="false" onAction="#onClickedSaveToLocalFile" text="保存信息到本地文件" />
+            <TextField fx:id="tfSongPath" editable="false" layoutX="14.0" layoutY="13.0" prefHeight="30.0" prefWidth="226.0" />
+            <Button fx:id="btnChooseSongFile" layoutX="249.0" layoutY="15.0" mnemonicParsing="false" onAction="#onClickedChooseSongFile" prefHeight="26.0" prefWidth="96.0" text="选择歌曲文件" />
+            <TextField fx:id="tfLyricPath" editable="false" layoutX="14.0" layoutY="66.0" prefHeight="30.0" prefWidth="226.0" />
+            <Button fx:id="btnChooseLyricFile" layoutX="248.0" layoutY="68.0" mnemonicParsing="false" onAction="#onClickedChooseLyricFile" prefHeight="26.0" prefWidth="97.0" text="选择歌词文件" />
+            <Label layoutX="24.0" layoutY="328.0" text="歌名：" />
+            <TextField fx:id="tfTitle" layoutX="69.0" layoutY="321.0" prefHeight="30.0" prefWidth="100.0" />
+            <Label layoutX="178.0" layoutY="328.0" text="歌手：" />
+            <TextField fx:id="tfArtist" layoutX="223.0" layoutY="321.0" prefHeight="30.0" prefWidth="100.0" />
+            <Label layoutX="331.0" layoutY="327.0" text="专辑：" />
+            <TextField fx:id="tfAlbum" layoutX="376.0" layoutY="320.0" prefHeight="30.0" prefWidth="100.0" />
+            <Label layoutX="60.0" layoutY="120.0" text="时长：" />
+            <Label fx:id="labTotalTime" layoutX="102.0" layoutY="120.0" text="00:00" />
+            <Label layoutX="195.0" layoutY="119.0" text="文件大小：" />
+            <Label fx:id="labSize" layoutX="260.0" layoutY="119.0" text="0M" />
             <Button fx:id="btnUpload" layoutX="203.0" layoutY="400.0" mnemonicParsing="false" onAction="#onClickedUpload" text="上传" />
             <Button fx:id="btnCancel" layoutX="279.0" layoutY="400.0" mnemonicParsing="false" onAction="#onClickedCancel" text="取消" />
-            <ProgressIndicator fx:id="progressIndicator" visible="false" layoutX="253.0" layoutY="352.0" prefHeight="20.0" prefWidth="20.0" />
+            <ProgressIndicator fx:id="progressIndicator" layoutX="252.0" layoutY="369.0" prefHeight="20.0" prefWidth="20.0" visible="false" />
+            <TableView fx:id="tableViewAlbum" layoutX="311.0" layoutY="192.0" prefHeight="101.0" prefWidth="152.0" onMouseClicked="#onClickedTableAlbum">
+              <columns>
+                <TableColumn fx:id="columnAlbumID" prefWidth="75.0" text="ID" />
+                <TableColumn fx:id="columnAlbumName" prefWidth="75.0" text="专辑名称" />
+              </columns>
+               <placeholder>
+                  <Label text="可选" />
+               </placeholder>
+            </TableView>
+            <TextField fx:id="tfAlbumForSearch" layoutX="310.0" layoutY="159.0" prefHeight="25.0" prefWidth="77.0" />
+            <Button layoutX="398.0" layoutY="158.0" mnemonicParsing="false" onAction="#onClickedQueryAlbum" text="查询专辑" />
+            <TableView fx:id="tableViewSinger" layoutX="45.0" layoutY="191.0" onMouseClicked="#onClickedTableSinger" prefHeight="101.0" prefWidth="152.0">
+               <columns>
+                  <TableColumn fx:id="columnSingerID" prefWidth="75.0" text="ID" />
+                  <TableColumn fx:id="columnSingerName" prefWidth="75.0" text="歌手名称" />
+               </columns>
+               <placeholder>
+                  <Label text="必选" />
+               </placeholder>
+            </TableView>
+            <TextField fx:id="tfArtistForSearch" layoutX="45.0" layoutY="157.0" prefHeight="25.0" prefWidth="77.0" />
+            <Button layoutX="132.0" layoutY="157.0" mnemonicParsing="false" onAction="#onClickedQueryArtist" text="查询歌手" />
+            <Label layoutX="82.0" layoutY="297.0" text="歌手可查询多选" />
+            <Label layoutX="300.0" layoutY="299.0" text="专辑可查询选择(收录)或直接输入" />
          </children>
       </AnchorPane>
    </center>
