@@ -23,7 +23,10 @@ git clone https://github.com/quanbisen/playermanager.git
 
 ##### 功能结构图
 
-![](https://raw.githubusercontent.com/quanbisen/testpicturebed/master/Image/资源管理客户端功能模块图.jpg)
+<div align="center">
+    <img src="https://raw.githubusercontent.com/quanbisen/testpicturebed/master/Image/资源管理客户端功能模块图.jpg">
+    </img>
+</div>
 
 ##### 1. 歌曲管理
 
