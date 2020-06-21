@@ -3,7 +3,7 @@ package com.util;
 
 public final class TimeUtils {
 
-    /**把时间格式为mm：ss的字符串转换成秒数
+    /**把时间格式为mm:ss的字符串转换成秒数
      * @param totalTime 需要转换的字符串
      * @return int整数
      * */

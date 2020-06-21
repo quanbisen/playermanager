@@ -1,23 +1,24 @@
 package com.controller.content;
 
-import com.application.SpringFXMLLoader;
 import com.config.Category;
 import com.config.ServerConfig;
+import com.controller.popup.SingerInsertController;
+import com.controller.popup.SingerQueryController;
+import com.controller.popup.SingerUpdateController;
 import com.pojo.Singer;
+import com.service.DeleteByIDService;
 import com.service.QueryAllService;
 import com.util.AlertUtils;
 import com.util.HttpClientUtils;
 import com.util.StageUtils;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Controller;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,8 +27,9 @@ import java.util.Date;
  * @author super lollipop
  * @date 20-2-24
  */
-@Controller
+
 public class TabSingerController {
+
     @FXML
     private StackPane root;
 
@@ -73,9 +75,6 @@ public class TabSingerController {
     @FXML
     private ProgressIndicator progressIndicator;
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
     public TableView<Singer> getTableViewSinger() {
         return tableViewSinger;
     }
@@ -93,8 +92,8 @@ public class TabSingerController {
         columnConstellation.setCellValueFactory(new PropertyValueFactory<>("constellation"));
         columnDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         columnBirthday.setCellFactory(c -> {
-            TableCell<Singer, Date> cell = new TableCell<Singer, Date>() {
-                private SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+            TableCell<Singer, Date> cell = new TableCell<>() {
+                private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
                 @Override
                 protected void updateItem(Date item, boolean empty) {
                     super.updateItem(item, empty);
@@ -103,7 +102,7 @@ public class TabSingerController {
                     }
                     else {
                         if(item != null)
-                            this.setText(format.format(item));
+                            this.setText(simpleDateFormat.format(item));
                     }
                 }
             };
@@ -115,7 +114,7 @@ public class TabSingerController {
 
     /**请求内容更新表格*/
     public void updateTable(){
-        QueryAllService queryAllService = applicationContext.getBean(QueryAllService.class);
+        QueryAllService queryAllService = new QueryAllService();
         queryAllService.setCategory(Category.Singer);
         queryAllService.setOnSucceeded(event -> {
             tableViewSinger.setItems(queryAllService.getValue());
@@ -127,19 +126,25 @@ public class TabSingerController {
     @FXML
     void onClickedAdd(MouseEvent mouseEvent) throws IOException {
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
-            Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/singer-insert.fxml").load());
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/popup/singer-insert.fxml"));
+            Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),fxmlLoader.load());
+            SingerInsertController singerInsertController = fxmlLoader.getController();
+            singerInsertController.setTabSingerController(this);
             StageUtils.synchronizeCenter((Stage) btnAdd.getScene().getWindow(),stage);
             stage.show();
         }
     }
 
     @FXML
-    void onClickedModify(MouseEvent event) throws IOException {
+    void onClickedModify(MouseEvent event) throws IOException, InterruptedException {
         Singer singer = tableViewSinger.getSelectionModel().getSelectedItem();
         if (singer == null){
             AlertUtils.showError("还没有选中歌手");
         }else {
-            Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/singer-update.fxml").load());
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/popup/singer-update.fxml"));
+            Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),fxmlLoader.load());
+            SingerUpdateController singerUpdateController = fxmlLoader.getController();
+            singerUpdateController.setTabSingerController(this);
             StageUtils.synchronizeCenter((Stage) btnAdd.getScene().getWindow(),stage);
             stage.show();
         }
@@ -152,20 +157,29 @@ public class TabSingerController {
         if (singer == null){
             AlertUtils.showError("还没有选中歌手");
         }else {
-            String string = HttpClientUtils.executeDelete(applicationContext.getBean(ServerConfig.class).getSingerURL() + "/delete/" + singer.getId());
-            if (string.equals("1")){    //如果返回等于一
-                AlertUtils.showInformation("删除成功");
-                tableViewSinger.getItems().remove(singer);
-            }else {
-                AlertUtils.showError("删除失败");
-            }
+            DeleteByIDService deleteByIDService = new DeleteByIDService();
+            deleteByIDService.setId(singer.getId());
+            deleteByIDService.setCategory(Category.Singer);
+            progressIndicator.visibleProperty().bind(deleteByIDService.runningProperty());
+            deleteByIDService.setOnSucceeded(event1 -> {
+                if (deleteByIDService.getValue().equals("1")){
+                    AlertUtils.showInformation("删除成功");
+                    tableViewSinger.getItems().remove(singer);
+                }else {
+                    AlertUtils.showError("删除失败");
+                }
+            });
+            deleteByIDService.start();  //启动服务
         }
     }
 
 
     @FXML
     void onClickedQuery(MouseEvent event) throws IOException {
-        Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/singer-query.fxml").load());
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/popup/singer-query.fxml"));
+        Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),fxmlLoader.load());
+        SingerQueryController singerQueryController = fxmlLoader.getController();
+        singerQueryController.setTabSingerController(this);
         StageUtils.synchronizeCenter((Stage) btnAdd.getScene().getWindow(),stage);
         stage.show();
     }

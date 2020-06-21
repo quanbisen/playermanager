@@ -1,13 +1,12 @@
 package com.controller.popup;
 
 import com.config.Category;
-import com.config.LocalConfig;
+import com.controller.content.TabSongController;
 import com.pojo.Album;
 import com.pojo.Singer;
 import com.service.InsertSongService;
 import com.service.QueryByNameLikeService;
 import com.util.AlertUtils;
-import com.util.FileUtils;
 import com.util.StageUtils;
 import com.util.TimeUtils;
 import javafx.event.ActionEvent;
@@ -28,13 +27,7 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.id3.AbstractID3v2Frame;
 import org.jaudiotagger.tag.id3.framebody.FrameBodyAPIC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Controller;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,7 +35,7 @@ import java.util.List;
  * @author super lollipop
  * @date 20-2-23
  */
-@Controller
+
 public class SongInsertController {
 
     @FXML
@@ -108,18 +101,13 @@ public class SongInsertController {
     @FXML
     private TextField tfArtistForSearch;
 
-    private ApplicationContext applicationContext;
+    private TabSongController tabSongController;
 
     private File songFile;
 
-    private File albumFile;
+    private byte[] albumBytes;
 
     private File lyricFile;
-
-    @Autowired
-    public void constructor(ApplicationContext applicationContext){
-        this.applicationContext = applicationContext;
-    }
 
     public ImageView getIvAlbum() {
         return ivAlbum;
@@ -149,12 +137,16 @@ public class SongInsertController {
         return songFile;
     }
 
-    public File getAlbumFile() {
-        return albumFile;
+    public byte[] getAlbumFile() {
+        return albumBytes;
     }
 
     public File getLyricFile() {
         return lyricFile;
+    }
+
+    public void setTabSongController(TabSongController tabSongController) {
+        this.tabSongController = tabSongController;
     }
 
     public void initialize(){
@@ -177,7 +169,7 @@ public class SongInsertController {
 
     @FXML
     public void onClickedChooseAlbumFile(MouseEvent event) throws IOException {
-        albumFile = StageUtils.getImageFileChooser().showOpenDialog(ivAlbum.getScene().getWindow());
+        File albumFile = StageUtils.getImageFileChooser().showOpenDialog(ivAlbum.getScene().getWindow());
         if (albumFile != null){
             if (albumFile.length() / 1024 /1024 > 1){ //文件大小大于1m，不允许选择
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -185,7 +177,16 @@ public class SongInsertController {
                 alert.setContentText("图片文件大于1M");
                 alert.showAndWait();
             }else {
-                Image image = new Image("file:" + albumFile.toPath().toString(),150,150,true,true);
+                //读取文件，转换成数组
+                FileInputStream fis = new FileInputStream(albumFile.toPath().toFile());
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                byte[] bytes = new byte[1024];
+                int len;
+                while ((len = fis.read(bytes)) != -1){
+                    bos.write(bytes,0,len);
+                }
+                albumBytes = bos.toByteArray();    //传递给成员变量，存储图片字节数组
+                Image image = new Image(new ByteArrayInputStream(albumBytes),150,150,true,true);
                 ivAlbum.setImage(image);
             }
         }
@@ -237,7 +238,7 @@ public class SongInsertController {
             tfTitle.setText(title);
             tfArtistForSearch.setText(artist);
             tfAlbumForSearch.setText(album);
-            QueryByNameLikeService queryByNameLikeService = applicationContext.getBean(QueryByNameLikeService.class);
+            QueryByNameLikeService queryByNameLikeService = new QueryByNameLikeService();
             queryByNameLikeService.setName(artist);
             queryByNameLikeService.setCategory(Category.Singer);
             queryByNameLikeService.setOnSucceeded(event -> {
@@ -251,9 +252,9 @@ public class SongInsertController {
             AbstractID3v2Frame abstractID3v2Frame = (AbstractID3v2Frame)mp3File.getID3v2Tag().getFrame("APIC");
             if (abstractID3v2Frame != null){
                 FrameBodyAPIC frameBodyAPIC = (FrameBodyAPIC) abstractID3v2Frame.getBody();
-                albumFile = FileUtils.getFile(frameBodyAPIC.getImageData(),applicationContext.getBean(LocalConfig.class).getConfigPath().toString(),"tmp");
-                System.out.println(albumFile.length());
-                Image albumImage = new Image(new FileInputStream(albumFile),150,150,true,true);
+//                albumFile = FileUtils.getFile(frameBodyAPIC.getImageData(),applicationContext.getBean(LocalConfig.class).getConfigPath().toString(),"tmp");
+                albumBytes = frameBodyAPIC.getImageData();
+                Image albumImage = new Image(new ByteArrayInputStream(albumBytes),150,150,true,true);
                 ivAlbum.setImage(albumImage);
             }
         }
@@ -284,7 +285,9 @@ public class SongInsertController {
     @FXML
     public void onClickedUpload(ActionEvent event) {
         if (validateInput()){
-            InsertSongService insertSongService = applicationContext.getBean(InsertSongService.class);
+            InsertSongService insertSongService = new InsertSongService();
+            insertSongService.setTabSongController(tabSongController);
+            insertSongService.setSongInsertController(this);
             progressIndicator.visibleProperty().bind(insertSongService.runningProperty());
             insertSongService.start();
         }
@@ -294,7 +297,7 @@ public class SongInsertController {
     public void onClickedQueryAlbum(ActionEvent actionEvent) {
         String album = tfAlbumForSearch.getText().trim();
         if (!album.equals("")){
-            QueryByNameLikeService queryByNameLikeService = applicationContext.getBean(QueryByNameLikeService.class);
+            QueryByNameLikeService queryByNameLikeService = new QueryByNameLikeService();
             queryByNameLikeService.setName(album);
             queryByNameLikeService.setCategory(Category.Album);
             progressIndicator.visibleProperty().bind(queryByNameLikeService.runningProperty());
@@ -308,7 +311,7 @@ public class SongInsertController {
     public void onClickedQueryArtist(ActionEvent actionEvent) {
         String artist = tfArtistForSearch.getText().trim();
         if (!artist.equals("")){
-            QueryByNameLikeService queryByNameLikeService = applicationContext.getBean(QueryByNameLikeService.class);
+            QueryByNameLikeService queryByNameLikeService = new QueryByNameLikeService();
             queryByNameLikeService.setName(artist);
             queryByNameLikeService.setCategory(Category.Singer);
             progressIndicator.visibleProperty().bind(queryByNameLikeService.runningProperty());
@@ -321,7 +324,7 @@ public class SongInsertController {
     public void onClickedTableSinger(MouseEvent mouseEvent) {
         if (tableViewSinger.getItems() != null && tableViewSinger.getItems().size() > 0){
             Singer singer = tableViewSinger.getSelectionModel().getSelectedItem();  //获取选择的歌手
-            List<Singer> singerList;
+            List<Singer> singerList = null;
             if (tfArtist.getUserData() == null){
                 singerList = new LinkedList<>();
                 tfArtist.setText(singer.getName());

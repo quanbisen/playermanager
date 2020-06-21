@@ -7,34 +7,27 @@ import com.controller.popup.AlbumUpdateController;
 import com.pojo.Album;
 import com.util.AlertUtils;
 import com.util.HttpClientUtils;
+import com.util.StringUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.stage.Stage;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 
-@Service
-@Scope("prototype")
 public class UpdateAlbumService extends javafx.concurrent.Service<Void> {
 
     private AlbumUpdateController albumUpdateController;
 
-    private ServerConfig serverConfig;
-
     private TabAlbumController tabAlbumController;
 
-
-    @Autowired
-    public void constructor(AlbumUpdateController albumUpdateController,ServerConfig serverConfig,TabAlbumController tabAlbumController){
+    public void setAlbumUpdateController(AlbumUpdateController albumUpdateController) {
         this.albumUpdateController = albumUpdateController;
-        this.serverConfig = serverConfig;
+    }
+
+    public void setTabAlbumController(TabAlbumController tabAlbumController) {
         this.tabAlbumController = tabAlbumController;
     }
 
@@ -49,7 +42,7 @@ public class UpdateAlbumService extends javafx.concurrent.Service<Void> {
                 //获取原来的专辑信息对象
                 Album album = tabAlbumController.getTableViewAlbum().getSelectionModel().getSelectedItem();
                 if (!description.equals(album.getDescription()) || imageFile != null){    //判断是否需要执行更新操作，如果true则需要
-                    String url = serverConfig.getAlbumURL() + "/update";
+                    String url = ServerConfig.getInstance().getAlbumURL() + "/update";
                     if (!StringUtils.isEmpty(description)){
                         album.setDescription(description);
                     }

@@ -11,17 +11,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
 
 /**
  * @author super lollipop
  * @date 20-2-25
  */
-@Controller
-@Scope("prototype")
+
 public class SingerQueryController {
 
     @FXML
@@ -30,13 +25,9 @@ public class SingerQueryController {
     @FXML
     private TextField tfName;
 
-    private ApplicationContext applicationContext;
-
     private TabSingerController tabSingerController;
 
-    @Autowired
-    public void constructor(ApplicationContext applicationContext,TabSingerController tabSingerController){
-        this.applicationContext = applicationContext;
+    public void setTabSingerController(TabSingerController tabSingerController) {
         this.tabSingerController = tabSingerController;
     }
 
@@ -48,10 +39,10 @@ public class SingerQueryController {
     @FXML
     public void onClickedConfirm(ActionEvent actionEvent) {
         if (!tfName.getText().trim().equals("")){
-            QueryByNameLikeService queryByNameLikeService = applicationContext.getBean(QueryByNameLikeService.class);
-            tabSingerController.getProgressIndicator().visibleProperty().bind(queryByNameLikeService.runningProperty());
-            queryByNameLikeService.setCategory(Category.Singer);
+            QueryByNameLikeService queryByNameLikeService = new QueryByNameLikeService();
             queryByNameLikeService.setName(tfName.getText());
+            queryByNameLikeService.setCategory(Category.Singer);
+            tabSingerController.getProgressIndicator().visibleProperty().bind(queryByNameLikeService.runningProperty());
             queryByNameLikeService.setOnSucceeded(event -> {
                 ObservableList<Singer> observableList = queryByNameLikeService.getValue();
                 TableView<Singer> tableViewSinger = tabSingerController.getTableViewSinger();

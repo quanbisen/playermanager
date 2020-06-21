@@ -1,5 +1,6 @@
 package com.controller.popup;
 
+import com.controller.content.TabSingerController;
 import com.service.InsertSingerService;
 import com.util.AlertUtils;
 import javafx.application.Platform;
@@ -10,9 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Controller;
+import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,7 +20,6 @@ import java.nio.file.Files;
  * @author super lollipop
  * @date 20-2-24
  */
-@Controller
 public class SingerInsertController {
 
     @FXML
@@ -58,9 +56,7 @@ public class SingerInsertController {
 
     private byte[] imageBytes;
 
-    public ImageView getIvImage() {
-        return ivImage;
-    }
+    private TabSingerController tabSingerController;
 
     public TextField getTfWeight() {
         return tfWeight;
@@ -106,8 +102,9 @@ public class SingerInsertController {
         return imageBytes;
     }
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    public void setTabSingerController(TabSingerController tabSingerController) {
+        this.tabSingerController = tabSingerController;
+    }
 
     public void initialize(){
         Platform.runLater(()->{
@@ -131,7 +128,7 @@ public class SingerInsertController {
 
     @FXML
     void onClickedCancel(ActionEvent event) {
-        btnCancel.getScene().getWindow().hide();
+        ((Stage)btnCancel.getScene().getWindow()).close();
     }
 
     @FXML
@@ -160,9 +157,11 @@ public class SingerInsertController {
     @FXML
     void onClickedConfirm(ActionEvent event) {
         if (validateInput()){
-            InsertSingerService insertSingerService = applicationContext.getBean(InsertSingerService.class);
+            InsertSingerService insertSingerService = new InsertSingerService();
+            insertSingerService.setTabSingerController(tabSingerController);
+            insertSingerService.setSingerInsertController(this);
             progressIndicator.visibleProperty().bind(insertSingerService.runningProperty());
-            insertSingerService.restart();
+            insertSingerService.start();
         }
     }
 

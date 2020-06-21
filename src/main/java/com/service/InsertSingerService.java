@@ -7,16 +7,11 @@ import com.controller.content.TabSingerController;
 import com.pojo.Singer;
 import com.util.AlertUtils;
 import com.util.HttpClientUtils;
+import com.util.StringUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.ZoneId;
@@ -26,18 +21,19 @@ import java.util.Date;
  * @author super lollipop
  * @date 20-2-24
  */
-@Service
-@Scope("singleton")
 public class InsertSingerService extends javafx.concurrent.Service<Void> {
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Autowired
     private SingerInsertController singerInsertController;
 
-    @Autowired
     private TabSingerController tabSingerController;
+
+    public void setSingerInsertController(SingerInsertController singerInsertController) {
+        this.singerInsertController = singerInsertController;
+    }
+
+    public void setTabSingerController(TabSingerController tabSingerController) {
+        this.tabSingerController = tabSingerController;
+    }
 
     @Override
     protected Task<Void> createTask() {
@@ -47,7 +43,7 @@ public class InsertSingerService extends javafx.concurrent.Service<Void> {
                 try {
                     //获取歌手图片的文件名
                     String fileName = singerInsertController.getImageFile().getName();
-                    String url = applicationContext.getBean(ServerConfig.class).getSingerURL() + "/insert";
+                    String url = ServerConfig.getInstance().getSingerURL() + "/insert";
                     Singer singer = new Singer();
                     singer.setName(singerInsertController.getTfName().getText());
                     if (singerInsertController.getDpBirthday().getValue() != null){ //设置生日

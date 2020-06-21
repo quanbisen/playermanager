@@ -3,20 +3,15 @@ package com.controller.popup;
 import com.config.Category;
 import com.controller.content.TabSongController;
 import com.service.QueryByNameLikeService;
-import com.service.QuerySongByNameService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Controller;
 
 /**
  * @author super lollipop
  * @date 20-2-22
  */
-@Controller
 public class SongQueryController {
 
     @FXML
@@ -25,18 +20,14 @@ public class SongQueryController {
     @FXML
     private Button btnCancel;
 
-    private ApplicationContext applicationContext;
-
     private TabSongController tabSongController;
-
-    @Autowired
-    public void constructor(ApplicationContext applicationContext,TabSongController tabSongController){
-        this.applicationContext = applicationContext;
-        this.tabSongController = tabSongController;
-    }
 
     public TextField getTfName() {
         return tfName;
+    }
+
+    public void setTabSongController(TabSongController tabSongController) {
+        this.tabSongController = tabSongController;
     }
 
     @FXML
@@ -46,9 +37,8 @@ public class SongQueryController {
 
     @FXML
     public void onClickedConfirm(ActionEvent actionEvent) {
-        onClickedCancel(actionEvent);
-        if (!tfName.getText().trim().equals("")){
-            QueryByNameLikeService queryByNameLikeService = applicationContext.getBean(QueryByNameLikeService.class);
+        if (!tfName.getText().trim().equals("")){   //如果输入的内容不为空
+            QueryByNameLikeService queryByNameLikeService = new QueryByNameLikeService();
             queryByNameLikeService.setName(tfName.getText().trim());
             queryByNameLikeService.setCategory(Category.Song);
             tabSongController.getProgressIndicator().visibleProperty().bind(queryByNameLikeService.runningProperty());
@@ -60,5 +50,6 @@ public class SongQueryController {
             });
             queryByNameLikeService.start();
         }
+        onClickedCancel(actionEvent);
     }
 }

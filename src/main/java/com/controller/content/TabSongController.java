@@ -1,7 +1,9 @@
 package com.controller.content;
 
-import com.application.SpringFXMLLoader;
 import com.config.Category;
+import com.controller.popup.SongInsertController;
+import com.controller.popup.SongQueryController;
+import com.controller.popup.SongUpdateController;
 import com.pojo.Album;
 import com.pojo.Singer;
 import com.pojo.Song;
@@ -12,6 +14,7 @@ import com.util.StageUtils;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
@@ -19,9 +22,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -33,7 +33,6 @@ import java.util.logging.Logger;
  * @author super lollipop
  * @date 20-2-22
  */
-@Controller
 public class TabSongController {
 
     private static Logger logger;
@@ -89,13 +88,6 @@ public class TabSongController {
     @FXML
     private TableColumn<Song,Date> columnCollectTime;
 
-    private ApplicationContext applicationContext;
-
-    @Autowired
-    public void constructor(ApplicationContext applicationContext){
-        this.applicationContext = applicationContext;
-    }
-
     public ProgressIndicator getProgressIndicator() {
         return progressIndicator;
     }
@@ -150,8 +142,7 @@ public class TabSongController {
     }
 
     public void updateTable(){
-        QueryAllService queryAllService = applicationContext.getBean(QueryAllService.class);
-        queryAllService.setCategory(Category.Song);
+        QueryAllService queryAllService = new QueryAllService(Category.Song);
         queryAllService.setOnSucceeded(event -> {
             tableViewSong.setItems(queryAllService.getValue());
         });
@@ -159,10 +150,10 @@ public class TabSongController {
         queryAllService.start();
     }
 
-    private void formatDateColumn(TableColumn tableColumn){
+    private void formatDateColumn(TableColumn<Song,Date> tableColumn){
         tableColumn.setCellFactory(c -> {
-            TableCell<Singer, Date> cell = new TableCell<Singer, Date>() {
-                private SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+            TableCell<Song, Date> cell = new TableCell<>() {
+                private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
                 @Override
                 protected void updateItem(Date item, boolean empty) {
                     super.updateItem(item, empty);
@@ -171,7 +162,7 @@ public class TabSongController {
                     }
                     else {
                         if(item != null)
-                            this.setText(format.format(item));
+                            this.setText(simpleDateFormat.format(item));
                     }
                 }
             };
@@ -182,7 +173,10 @@ public class TabSongController {
     @FXML
     public void onClickedAdd(MouseEvent mouseEvent) throws IOException {
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
-            Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/song-insert.fxml").load());
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/popup/song-insert.fxml"));
+            Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),fxmlLoader.load());
+            SongInsertController songInsertController = fxmlLoader.getController();
+            songInsertController.setTabSongController(this);
             StageUtils.synchronizeCenter((Stage) btnAdd.getScene().getWindow(),stage);
             stage.show();
         }
@@ -198,7 +192,10 @@ public class TabSongController {
                 alert.setContentText("还没有选中歌曲");
                 alert.showAndWait();
             }else {
-                Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/song-update.fxml").load());
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/popup/song-update.fxml"));
+                Stage stage = StageUtils.getStage((Stage) btnAdd.getScene().getWindow(),fxmlLoader.load());
+                SongUpdateController songUpdateController = fxmlLoader.getController();
+                songUpdateController.setTabSongController(this); //注入控制器对象
                 StageUtils.synchronizeCenter((Stage) btnAdd.getScene().getWindow(),stage);
                 stage.show();
             }
@@ -214,7 +211,7 @@ public class TabSongController {
             if (song == null){
                 AlertUtils.showError("还没有选中歌曲");
             }else {
-                DeleteByIDService deleteByIDService = applicationContext.getBean(DeleteByIDService.class);
+                DeleteByIDService deleteByIDService = new DeleteByIDService();
                 deleteByIDService.setCategory(Category.Song);
                 deleteByIDService.setId(song.getId());
                 progressIndicator.visibleProperty().bind(deleteByIDService.runningProperty());
@@ -223,7 +220,7 @@ public class TabSongController {
                         AlertUtils.showInformation("删除成功");
                         updateTable();
                     }else {
-                        AlertUtils.showInformation("删除失败");
+                        AlertUtils.showError("删除失败");
                     }
                 });
                 deleteByIDService.start();
@@ -232,25 +229,26 @@ public class TabSongController {
     }
 
 
-
+    /**“查询”按钮*/
     @FXML
     public void onClickedQuery(MouseEvent mouseEvent) throws IOException {
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
-
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/popup/song-query.fxml"));
             Stage primaryStage = (Stage) btnQuery.getScene().getWindow();
-            Stage stage = StageUtils.getStage(primaryStage,applicationContext.getBean(SpringFXMLLoader.class).getLoader("/fxml/popup/song-query.fxml").load());
+            Stage stage = StageUtils.getStage(primaryStage,fxmlLoader.load());
+            SongQueryController songQueryController = fxmlLoader.getController();
+            songQueryController.setTabSongController(this); //注入控制器对象
             StageUtils.synchronizeCenter(primaryStage,stage);
             stage.show();
         }
     }
 
+    /**“刷新”按钮*/
     @FXML
     public void onClickedRefresh(MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
             updateTable();
         }
     }
-
-
 
 }

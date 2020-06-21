@@ -6,29 +6,18 @@ import com.util.HttpClientUtils;
 import com.util.ParserUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 import java.nio.charset.Charset;
 import java.util.List;
 
-@Service
-@Scope("prototype")
-public class QueryByNameLikeService extends javafx.concurrent.Service<ObservableList> {
+public class QueryByNameLikeService extends Service<ObservableList> {
 
     private Category category;
 
-    private ServerConfig serverConfig;
-
     private String name;
-
-    @Autowired
-    public void constructor(ServerConfig serverConfig){
-        this.serverConfig = serverConfig;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -40,34 +29,33 @@ public class QueryByNameLikeService extends javafx.concurrent.Service<Observable
 
     @Override
     protected Task<ObservableList> createTask() {
-        Task<ObservableList> task = new Task<ObservableList>() {
+        Task<ObservableList> task = new Task<>() {
             @Override
             protected ObservableList call() throws Exception {
                 String url = null;
-                switch (category){
-                    case Singer:{
-                        url = serverConfig.getSingerURL() + "/queryByNameLike";
+                switch (category) {
+                    case Singer: {
+                        url = ServerConfig.getInstance().getSingerURL() + "/queryByNameLike";
                         break;
                     }
-                    case Album:{
-                        url = serverConfig.getAlbumURL() + "/queryByNameLike";
+                    case Album: {
+                        url = ServerConfig.getInstance().getAlbumURL() + "/queryByNameLike";
                         break;
                     }
-                    case Song:{
-                        url = serverConfig.getSongURL() + "/queryByNameLike";
+                    case Song: {
+                        url = ServerConfig.getInstance().getSongURL() + "/queryByNameLike";
                         break;
                     }
                     default:
                 }
-                System.out.println(name);
-                MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create().addTextBody("name",name, ContentType.create("text/plain", Charset.forName("utf-8")));
-                String responseString = HttpClientUtils.executePost(url,multipartEntityBuilder.build());
-                List list = ParserUtils.parseResponseStringList(responseString,category);
-                if (list != null && list.size() > 0){
+                MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create().addTextBody("name", name, ContentType.create("text/plain", Charset.forName("utf-8")));
+                String responseString = HttpClientUtils.executePost(url, multipartEntityBuilder.build());
+                List list = ParserUtils.parseResponseStringList(responseString, category);
+                if (list != null && list.size() > 0) {
                     ObservableList observableList = FXCollections.observableArrayList();
                     observableList.addAll(list);
                     return observableList;
-                }else {
+                } else {
                     return null;
                 }
 

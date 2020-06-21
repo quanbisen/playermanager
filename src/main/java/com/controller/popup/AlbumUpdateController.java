@@ -5,6 +5,8 @@ import com.pojo.Album;
 import com.service.LoadOnlineImageService;
 import com.service.UpdateAlbumService;
 import com.util.StageUtils;
+import com.util.StringUtils;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -13,16 +15,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
-
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-@Controller
 public class AlbumUpdateController {
 
     @FXML
@@ -53,14 +49,6 @@ public class AlbumUpdateController {
 
     private TabAlbumController tabAlbumController;
 
-    private ApplicationContext applicationContext;
-
-    @Autowired
-    public void constructor(TabAlbumController tabAlbumController,ApplicationContext applicationContext){
-        this.tabAlbumController = tabAlbumController;
-        this.applicationContext = applicationContext;
-    }
-
     public TextArea getTaDescription() {
         return taDescription;
     }
@@ -69,28 +57,34 @@ public class AlbumUpdateController {
         return imageFile;
     }
 
+    public void setTabAlbumController(TabAlbumController tabAlbumController) {
+        this.tabAlbumController = tabAlbumController;
+    }
+
     public void initialize(){
-        /**原有数据初始化显示*/
-        Album album = tabAlbumController.getTableViewAlbum().getSelectionModel().getSelectedItem();
-        if (!StringUtils.isEmpty(album.getName())){
-            tfName.setText(album.getName());
-        }
-        if (!StringUtils.isEmpty(album.getSingerName())){
-            tfSinger.setText(album.getSingerName());
-        }
-        if (album.getPublishTime() != null){
-            dpPublishTime.setValue(LocalDateTime.ofInstant(album.getPublishTime().toInstant(), ZoneId.systemDefault()).toLocalDate());
-        }
-        if (!StringUtils.isEmpty(album.getDescription())){
-            taDescription.setText(album.getDescription());
-        }
-        if (!StringUtils.isEmpty(album.getImageURL())){
-            LoadOnlineImageService loadOnlineImageService = applicationContext.getBean(LoadOnlineImageService.class);
-            loadOnlineImageService.setOptimizeURI(album.getImageURL());
-            loadOnlineImageService.setImageSize(150,150);
-            loadOnlineImageService.setOnSucceeded(event -> ivAlbum.setImage(loadOnlineImageService.getValue()));
-            loadOnlineImageService.start();
-        }
+        Platform.runLater(()->{
+            /**原有数据初始化显示*/
+            Album album = tabAlbumController.getTableViewAlbum().getSelectionModel().getSelectedItem();
+            if (!StringUtils.isEmpty(album.getName())){
+                tfName.setText(album.getName());
+            }
+            if (!StringUtils.isEmpty(album.getSingerName())){
+                tfSinger.setText(album.getSingerName());
+            }
+            if (album.getPublishTime() != null){
+                dpPublishTime.setValue(LocalDateTime.ofInstant(album.getPublishTime().toInstant(), ZoneId.systemDefault()).toLocalDate());
+            }
+            if (!StringUtils.isEmpty(album.getDescription())){
+                taDescription.setText(album.getDescription());
+            }
+            if (!StringUtils.isEmpty(album.getImageURL())){
+                LoadOnlineImageService loadOnlineImageService = new LoadOnlineImageService();
+                loadOnlineImageService.setPreferURI(album.getImageURL());
+                loadOnlineImageService.setImageSize(150,150);
+                loadOnlineImageService.setOnSucceeded(event -> ivAlbum.setImage(loadOnlineImageService.getValue()));
+                loadOnlineImageService.start();
+            }
+        });
     }
 
     @FXML
@@ -124,7 +118,9 @@ public class AlbumUpdateController {
 
     @FXML
     void onClickedUpdate(ActionEvent event) {
-        UpdateAlbumService updateAlbumService = applicationContext.getBean(UpdateAlbumService.class);
+        UpdateAlbumService updateAlbumService = new UpdateAlbumService();
+        updateAlbumService.setTabAlbumController(tabAlbumController);
+        updateAlbumService.setAlbumUpdateController(this);
         progressIndicator.visibleProperty().bind(updateAlbumService.runningProperty());
         updateAlbumService.start();
     }

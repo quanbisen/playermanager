@@ -7,25 +7,17 @@ import com.pojo.Singer;
 import com.util.HttpClientUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
  * @author super lollipop
  * @date 20-2-25
  */
-@Service
-@Scope("prototype")
-public class QuerySingerByNameService extends javafx.concurrent.Service<ObservableList<Singer>> {
 
-    @Autowired
-    private ApplicationContext applicationContext;
+public class QuerySingerByNameService extends Service<ObservableList<Singer>> {
 
-    @Autowired
     private SingerQueryController singerQueryController;
 
     @Override

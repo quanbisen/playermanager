@@ -10,16 +10,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Controller;
 import java.time.ZoneId;
 
 /**
  * @author super lollipop
  * @date 20-2-25
  */
-@Controller
 public class SingerUpdateController {
 
 
@@ -55,10 +51,6 @@ public class SingerUpdateController {
 
     private Singer selectedSinger;
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Autowired
     private TabSingerController tabSingerController;
 
     public TextField getTfWeight() {
@@ -101,45 +93,51 @@ public class SingerUpdateController {
         return selectedSinger;
     }
 
+    public void setTabSingerController(TabSingerController tabSingerController) {
+        this.tabSingerController = tabSingerController;
+    }
+
     public void initialize(){
         Platform.runLater(()->{
             tfName.requestFocus();
+            selectedSinger = tabSingerController.getTableViewSinger().getSelectionModel().getSelectedItem();
+            tfName.setText(selectedSinger.getName());
+            if (selectedSinger.getBirthday() != null){
+                dpBirthday.setValue(selectedSinger.getBirthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            }
+            if (selectedSinger.getHeight() == 0){
+                tfHeight.setText("");
+            }else {
+                tfHeight.setText(String.valueOf(selectedSinger.getHeight()));
+            }
+            if (selectedSinger.getWeight() == 0){
+                tfWeight.setText("");
+            }else {
+                tfWeight.setText(String.valueOf(selectedSinger.getWeight()));
+            }
+            cbConstellation.setValue(selectedSinger.getConstellation());
+            taDescription.setText(selectedSinger.getDescription());
+            Image image = new Image(selectedSinger.getImageURL(),150,150,true,true);
+            if (!image.isError()){
+                ivImage.setImage(image);
+            }
+            tfHeight.setTextFormatter(new TextFormatter<String>(change -> {
+                if (change.isDeleted() || change.getText().matches("^[0-9.]")){
+                    return change;
+                }else {
+                    return null;
+                }
+            }));
+            tfWeight.setTextFormatter(new TextFormatter<String>(change -> {
+                if (change.isDeleted() || change.getText().matches("^[0-9.]")){
+                    return change;
+                }else {
+                    return null;
+                }
+            }));
         });
-        selectedSinger = tabSingerController.getTableViewSinger().getSelectionModel().getSelectedItem();
-        tfName.setText(selectedSinger.getName());
-        if (selectedSinger.getBirthday() != null){
-            dpBirthday.setValue(selectedSinger.getBirthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        }
-        if (selectedSinger.getHeight() == 0){
-            tfHeight.setText("");
-        }else {
-            tfHeight.setText(String.valueOf(selectedSinger.getHeight()));
-        }
-        if (selectedSinger.getWeight() == 0){
-            tfWeight.setText("");
-        }else {
-            tfWeight.setText(String.valueOf(selectedSinger.getWeight()));
-        }
-        cbConstellation.setValue(selectedSinger.getConstellation());
-        taDescription.setText(selectedSinger.getDescription());
-        Image image = new Image(selectedSinger.getImageURL(),150,150,true,true);
-        if (!image.isError()){
-            ivImage.setImage(image);
-        }
-        tfHeight.setTextFormatter(new TextFormatter<String>(change -> {
-            if (change.isDeleted() || change.getText().matches("^[0-9.]")){
-                return change;
-            }else {
-                return null;
-            }
-        }));
-        tfWeight.setTextFormatter(new TextFormatter<String>(change -> {
-            if (change.isDeleted() || change.getText().matches("^[0-9.]")){
-                return change;
-            }else {
-                return null;
-            }
-        }));
+
+
     }
 
     @FXML
@@ -150,9 +148,11 @@ public class SingerUpdateController {
     @FXML
     void onClickedConfirm(ActionEvent event) {
         if (validateInput()){
-            UpdateSingerService updateSingerService = applicationContext.getBean(UpdateSingerService.class);
+            UpdateSingerService updateSingerService = new UpdateSingerService();
+            updateSingerService.setTabSingerController(tabSingerController);
+            updateSingerService.setSingerUpdateController(this);
             progressIndicator.visibleProperty().bind(updateSingerService.runningProperty());
-            updateSingerService.restart();
+            updateSingerService.start();
         }
     }
 

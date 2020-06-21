@@ -28,44 +28,26 @@
     </repositories>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.openjfx</groupId>-->
-<!--            <artifactId>javafx-controls</artifactId>-->
-<!--            <version>13</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.openjfx</groupId>-->
-<!--            <artifactId>javafx-media</artifactId>-->
-<!--            <version>13</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.openjfx</groupId>-->
-<!--            <artifactId>javafx-graphics</artifactId>-->
-<!--            <version>13</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.openjfx</groupId>-->
-<!--            <artifactId>javafx-fxml</artifactId>-->
-<!--            <version>13</version>-->
-<!--        </dependency>-->
-
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>5.2.4.RELEASE</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>14</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>5.2.4.RELEASE</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>14</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>5.2.4.RELEASE</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>14</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>14</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
@@ -78,14 +60,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.62</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.karaf.http/org.apache.karaf.http.core -->
-        <dependency>
-            <groupId>org.apache.karaf.http</groupId>
-            <artifactId>org.apache.karaf.http.core</artifactId>
-            <version>4.2.8</version>
-            <scope>provided</scope>
+            <version>1.2.71</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
@@ -116,8 +91,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <source>14</source>
+                    <target>14</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -128,6 +103,14 @@
                     <mainClass>com.application.FXManager</mainClass>
                 </configuration>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>com.gluonhq</groupId>-->
+<!--                <artifactId>client-maven-plugin</artifactId>-->
+<!--                <version>0.1.27</version>-->
+<!--                <configuration>-->
+<!--                    <mainClass>com.application.FXManager</mainClass>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 

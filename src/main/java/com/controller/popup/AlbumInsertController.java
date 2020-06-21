@@ -1,6 +1,7 @@
 package com.controller.popup;
 
 import com.config.Category;
+import com.controller.content.TabAlbumController;
 import com.pojo.Album;
 import com.pojo.Singer;
 import com.service.InsertAlbumService;
@@ -16,16 +17,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import java.io.File;
 import java.io.IOException;
 
-@Controller
-@Scope("prototype")
 public class AlbumInsertController {
 
     @FXML
@@ -55,13 +49,12 @@ public class AlbumInsertController {
     @FXML
     private TableColumn<Singer,String> columnSinger;
 
-    private ApplicationContext applicationContext;
-
     private File imageFile;
 
-    @Autowired
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    private TabAlbumController tabAlbumController;
+
+    public void setTabAlbumController(TabAlbumController tabAlbumController) {
+        this.tabAlbumController = tabAlbumController;
     }
 
     public void initialize() {
@@ -98,7 +91,7 @@ public class AlbumInsertController {
         if (!validateInput()){
             AlertUtils.showWarning("信息输入不完整");
         }else {
-            InsertAlbumService insertAlbumService = applicationContext.getBean(InsertAlbumService.class);
+            InsertAlbumService insertAlbumService = new InsertAlbumService();
             Album album = new Album();
             album.setName(tfName.getText().trim());
             if (!taDescription.getText().trim().equals("")){
@@ -107,13 +100,16 @@ public class AlbumInsertController {
             album.setSingerID(((Singer)tfSinger.getUserData()).getId());
             insertAlbumService.setAlbum(album);
             insertAlbumService.setImageFile(imageFile);
-            insertAlbumService.setBtnCancel(btnCancel);
+            insertAlbumService.setTabAlbumController(tabAlbumController);
+            insertAlbumService.setOnSucceeded(workerStateEvent -> onClickedCancel(actionEvent));
             insertAlbumService.start();
         }
     }
 
+    /**鉴别输入结果是否能执行操作的函数
+     * @return boolean*/
     private boolean validateInput() {
-        if (StringUtils.isEmpty(tfName.getText().trim()) || imageFile == null || imageFile.length() == 0){
+        if (tfName.getText().trim().equals("") || imageFile == null || imageFile.length() == 0){
             return false;
         }else{
             if (tfSinger.getUserData() == null){
@@ -127,7 +123,7 @@ public class AlbumInsertController {
     @FXML
     public void onClickedQuery(ActionEvent actionEvent) {
         if (!tfSinger.getText().trim().equals("")){
-            QueryByNameLikeService queryByNameLikeService = applicationContext.getBean(QueryByNameLikeService.class);
+            QueryByNameLikeService queryByNameLikeService = new QueryByNameLikeService();
             queryByNameLikeService.setCategory(Category.Singer);
             queryByNameLikeService.setName(tfSinger.getText());
             progressIndicator.visibleProperty().bind(queryByNameLikeService.runningProperty());

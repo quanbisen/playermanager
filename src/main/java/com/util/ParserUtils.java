@@ -5,7 +5,6 @@ import com.config.Category;
 import com.pojo.Album;
 import com.pojo.Singer;
 import com.pojo.Song;
-
 import java.util.List;
 
 public final class ParserUtils {

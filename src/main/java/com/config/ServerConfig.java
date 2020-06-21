@@ -1,6 +1,5 @@
 package com.config;
 
-import org.springframework.stereotype.Component;
 import java.io.*;
 import java.util.Properties;
 
@@ -8,13 +7,21 @@ import java.util.Properties;
  * @author super lollipop
  * @date 20-2-22
  */
-@Component
 public class ServerConfig {
 
     private String server;
 
+    private static ServerConfig serverConfig;
+
+    public static ServerConfig getInstance() throws IOException {
+        if (serverConfig == null){
+            serverConfig = new ServerConfig();
+        }
+        return serverConfig;
+    }
+
     public ServerConfig() throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("config/server-config.properties")));
+        BufferedReader in = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("config/server-config.properties")));
         Properties properties = new Properties();
         properties.load(in);
         server = properties.getProperty("server");
@@ -31,4 +38,5 @@ public class ServerConfig {
     public String getAlbumURL(){
         return server + "/album";
     }
+
 }

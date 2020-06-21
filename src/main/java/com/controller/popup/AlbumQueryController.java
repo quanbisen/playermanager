@@ -10,17 +10,8 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
 
-@Controller
-@Scope("prototype")
 public class AlbumQueryController {
-
-    @FXML
-    private Button btnConfirm;
 
     @FXML
     private Button btnCancel;
@@ -32,13 +23,6 @@ public class AlbumQueryController {
 
     private TableView<Album> tableViewAlbum;
 
-    private ApplicationContext applicationContext;
-
-    @Autowired
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
     public void setProgressIndicator(ProgressIndicator progressIndicator) {
         this.progressIndicator = progressIndicator;
     }
@@ -49,15 +33,18 @@ public class AlbumQueryController {
 
     @FXML
     public void onClickedConfirm(ActionEvent actionEvent) {
-        QueryByNameLikeService queryByNameLikeService = applicationContext.getBean(QueryByNameLikeService.class);
-        queryByNameLikeService.setCategory(Category.Album);
-        queryByNameLikeService.setName(tfName.getText());
-        progressIndicator.visibleProperty().bind(queryByNameLikeService.runningProperty());
+        if (!tfName.getText().trim().equals("")){   //输入文本不为空，执行操作
+            QueryByNameLikeService queryByNameLikeService = new QueryByNameLikeService();
+            queryByNameLikeService.setCategory(Category.Album);
+            queryByNameLikeService.setName(tfName.getText());
+            progressIndicator.visibleProperty().bind(queryByNameLikeService.runningProperty());
+            onClickedCancel(actionEvent);       //触发“取消”按钮时间，关闭stage界面
+            queryByNameLikeService.setOnSucceeded(event -> {
+                tableViewAlbum.setItems(queryByNameLikeService.getValue());
+            });
+            queryByNameLikeService.start();
+        }
         onClickedCancel(actionEvent);
-        queryByNameLikeService.setOnSucceeded(event -> {
-            tableViewAlbum.setItems(queryByNameLikeService.getValue());
-        });
-        queryByNameLikeService.start();
     }
 
     @FXML

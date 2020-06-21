@@ -1,29 +1,29 @@
 package com.service;
 
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.image.Image;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-@Service
-@Scope("prototype")
-public class LoadOnlineImageService extends javafx.concurrent.Service<Image> {
+public class LoadOnlineImageService extends Service<Image> {
 
+    /**默认图片的url*/
     private String defaultURI;
 
-    private String optimizeURI;
+    /**期望的图片url*/
+    private String preferURI;
 
+    /**图片宽度*/
     private double width;
 
+    /**图片高度*/
     private double height;
 
     public void setDefaultURI(String defaultURI) {
         this.defaultURI = defaultURI;
     }
 
-    public void setOptimizeURI(String optimizeURI) {
-        this.optimizeURI = optimizeURI;
+    public void setPreferURI(String preferURI) {
+        this.preferURI = preferURI;
     }
 
     public void setImageSize(double width , double height){
@@ -36,9 +36,13 @@ public class LoadOnlineImageService extends javafx.concurrent.Service<Image> {
         Task<Image> createImageTask = new Task<Image>() {
             @Override
             protected Image call() throws Exception {
-                Image image = new Image(optimizeURI,width,height,true,true);
-                if (image.isError() && !StringUtils.isEmpty(defaultURI)) {
-                    image = new Image(defaultURI, width, height, true, true);
+                Image image = new Image(preferURI,width,height,true,true);
+                if (image.isError()) {
+                    if (defaultURI != null && !defaultURI.equals("")){
+                        image = new Image(defaultURI, width, height, true, true);
+                    }else {
+                        throw new Exception("默认图片资源未设定");
+                    }
                 }
                 return image;
             }
