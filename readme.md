@@ -18,11 +18,17 @@ git clone https://github.com/quanbisen/playermanager.git
 
 2. 下载[JDK14](https://www.oracle.com/java/technologies/javase-jdk14-downloads.html),[JavaFX14 SDK](https://gluonhq.com/products/javafx/)
 3. 用IntelliJ IDEA打开，导入Maven管理的依赖包
-3. 添加JVM运行参数
+4. 添加JVM运行参数
 ```jvm
 --module-path /PATH_TO_FXHOME/lib --add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics
 ```
-4. 运行（这里Maven添加了JavaFX14 SDK的依赖，实际上编译运行是使用自己下载的JavaFX14 SDK的，所以PATH_TO_FXHOME为下载的JFX14的路径）
+5. 运行（这里Maven添加了JavaFX14 SDK的依赖，实际上编译运行是使用自己下载的JavaFX14 SDK的，所以PATH_TO_FXHOME为下载的JFX14的路径）
+
+###### 关于Ubuntu 系统无法输入中文的解决方法：添加JVM运行参数
+
+```jvm
+-Djdk.gtk.version=2
+```
 
 #### 功能结构及实现结果
 
